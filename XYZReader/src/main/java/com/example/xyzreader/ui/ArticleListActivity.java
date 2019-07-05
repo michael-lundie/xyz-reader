@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.adapters.ItemListAdapter;
 
@@ -42,6 +44,8 @@ public class ArticleListActivity extends AppCompatActivity implements
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.list_recycler_view) RecyclerView listRecyclerView;
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+
+    ItemListAdapter listAdapter;
 
     private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
         @Override
@@ -95,11 +99,12 @@ public class ArticleListActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 
-        ItemListAdapter listAdapter = new ItemListAdapter(cursor,
+        listAdapter = new ItemListAdapter(cursor,
                 new ItemListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick() {
-
+            public void onItemClick(Uri uri) {
+                startActivity(new Intent(
+                        Intent.ACTION_VIEW, uri));
             }
         });
 

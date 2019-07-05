@@ -1,6 +1,7 @@
 package com.example.xyzreader.ui.adapters;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.format.DateUtils;
@@ -13,10 +14,12 @@ import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.ui.ArticleListActivity;
 import com.example.xyzreader.ui.utils.DynamicHeightNetworkImageView;
 import com.example.xyzreader.ui.utils.ImageLoaderHelper;
 
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +34,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     public interface OnItemClickListener {
         //TODO: What item?
-        void onItemClick();
+        void onItemClick(Uri uri);
     }
 
 
@@ -86,7 +89,8 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ItemListAdapter.ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.bind(mListener);
+        Uri uri = ItemsContract.Items.buildItemUri(getItemId(holder.getAdapterPosition()));
+        holder.bind(mListener, uri);
     }
 
     @Override
@@ -107,7 +111,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             ButterKnife.bind(this,view);
         }
 
-        void bind(final OnItemClickListener listener) {
+        void bind(final OnItemClickListener listener, final Uri uri) {
 
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             Date publishedDate = parsePublishedDate();
@@ -132,6 +136,14 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
                     mCursor.getString(ArticleLoader.Query.THUMB_URL),
                     ImageLoaderHelper.getInstance(mView.getContext()).getImageLoader());
             thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(uri);
+                }
+            });
         }
     }
 }
