@@ -29,7 +29,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     private static final String TAG = ArticleListActivity.class.toString();
 
-    public interface onItemClickListener {
+    public interface OnItemClickListener {
         //TODO: What item?
         void onItemClick();
     }
