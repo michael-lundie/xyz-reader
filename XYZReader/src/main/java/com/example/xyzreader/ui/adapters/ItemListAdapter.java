@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
@@ -19,7 +18,6 @@ import com.example.xyzreader.ui.ArticleListActivity;
 import com.example.xyzreader.ui.utils.DynamicHeightNetworkImageView;
 import com.example.xyzreader.ui.utils.ImageLoaderHelper;
 
-import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -63,15 +61,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_article, parent, false);
-
-//        final ItemListAdapter.ViewHolder vh = new ItemListAdapter.ViewHolder(view);
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(Intent.ACTION_VIEW,
-//                        ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
-//            }
-//        });
         return new ViewHolder(view);
     }
 
@@ -89,7 +78,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ItemListAdapter.ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        Uri uri = ItemsContract.Items.buildItemUri(getItemId(holder.getAdapterPosition()));
+        Uri uri = ItemsContract.Items.buildItemUri(getItemId(position));
         holder.bind(mListener, uri);
     }
 

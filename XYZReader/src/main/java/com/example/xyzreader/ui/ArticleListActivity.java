@@ -1,21 +1,24 @@
 package com.example.xyzreader.ui;
 
-import android.app.LoaderManager;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
@@ -35,7 +38,7 @@ import butterknife.ButterKnife;
 public class ArticleListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String TAG = ArticleListActivity.class.toString();
+    private static final String LOG_TAG = ArticleListActivity.class.toString();
 
     private boolean mIsRefreshing = false;
 
@@ -65,7 +68,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
 
-        getLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(0, null, this);
 
         if (savedInstanceState == null) { refresh(); }
     }
@@ -103,6 +106,8 @@ public class ArticleListActivity extends AppCompatActivity implements
                 new ItemListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Uri uri) {
+                //TODO: Remove LOG
+                Log.e(LOG_TAG, "Requesting URI --> " + uri);
                 startActivity(new Intent(
                         Intent.ACTION_VIEW, uri));
             }
