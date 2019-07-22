@@ -2,7 +2,6 @@ package com.example.xyzreader.ui;
 
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -71,6 +70,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getData() != null) {
                 Log.e(LOG_TAG, "Retrieving URI <<-- " + getIntent().getData());
+
                 mStartId = ItemsContract.Items.getItemId(getIntent().getData());
                 //TODO: Pass selected item to adapter
                 selectedItemId = mStartId;
@@ -80,7 +80,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return ArticleLoader.newAllArticlesInstance(this);
+        return ArticleLoader.newInstanceIdOnly(this);
     }
 
     @Override

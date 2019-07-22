@@ -10,15 +10,26 @@ import android.support.v4.content.CursorLoader;
  */
 public class ArticleLoader extends CursorLoader {
     public static ArticleLoader newAllArticlesInstance(Context context) {
-        return new ArticleLoader(context, ItemsContract.Items.buildDirUri());
+        return new ArticleLoader(context, ItemsContract.Items.buildDirUri(), Query.PROJECTION);
     }
 
     public static ArticleLoader newInstanceForItemId(Context context, long itemId) {
-        return new ArticleLoader(context, ItemsContract.Items.buildItemUri(itemId));
+        return new ArticleLoader(context, ItemsContract.Items.buildItemUri(itemId), Query.PROJECTION);
     }
 
-    private ArticleLoader(Context context, Uri uri) {
-        super(context, uri, Query.PROJECTION, null, null, ItemsContract.Items.DEFAULT_SORT);
+    public static ArticleLoader newInstanceIdOnly(Context context) {
+        return new ArticleLoader(context, ItemsContract.Items.buildDirUri(), QueryIDs.PROJECTION);
+    }
+
+    private ArticleLoader(Context context, Uri uri, String[] projection) {
+        super(context, uri, projection, null, null, ItemsContract.Items.DEFAULT_SORT);
+    }
+
+    public interface QueryIDs {
+        String[] PROJECTION = {
+                ItemsContract.Items._ID };
+
+        int _ID = 0;
     }
 
     public interface Query {
