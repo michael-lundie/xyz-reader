@@ -1,6 +1,5 @@
 package com.example.xyzreader.ui.adapters;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import com.example.xyzreader.R;
 import com.example.xyzreader.ui.utils.TextRecyclerFeeder;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

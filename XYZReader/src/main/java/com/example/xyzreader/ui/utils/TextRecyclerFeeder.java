@@ -1,6 +1,8 @@
 package com.example.xyzreader.ui.utils;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A utility class responsible for taking a large input string/text passage, splitting each
@@ -12,14 +14,32 @@ import java.util.ArrayList;
     // we need to observe the current item the user is looking at, then make sure we load the next
     // batch of text.
 public class TextRecyclerFeeder {
-
+    private static final String LOG_TAG = TextRecyclerFeeder.class.toString();
     String inputString;
     ArrayList<String> textChunkArray;
+
+    int paragraphCount;
+    ArrayList<Integer> paragraphStartIndex;
 
 
     public TextRecyclerFeeder(String inputString) {
         this.inputString = testString;
         initFeeder();
+    }
+
+    /**
+     * Simple method to count
+     * @return
+     */
+    private void countParagraphs() {
+        paragraphCount = 0;
+        paragraphStartIndex = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\\\r\\\\n\\\\r\\\\n");
+        Matcher matcher = pattern.matcher(inputString);
+        while (matcher.find()) {
+            paragraphCount++;
+            paragraphStartIndex.add(paragraphCount, matcher.end());
+        }
     }
 
     private void initFeeder() {
@@ -62,10 +82,14 @@ public class TextRecyclerFeeder {
             }
         }
     }
+
+    public String fetchParagraphAtPosition(int Index) {
+
+    }
+
     private String splitString(String inputString) {
         String[] splitString = inputString.split("\r\n\r\n", 8);
         return "null";
-
     }
 
     public String getFormattedTextChunk(int index) {
