@@ -17,12 +17,33 @@
 
 <resources>
 
-    <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
-
+    <style name="MeadowThemeBase" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
-    <style name="Theme.Bacon.Detail">
-        <item name="android:statusBarColor">@android:color/transparent</item>
+    <!--Link base style in manifest-->
+    <style name="Meadow" parent="MeadowThemeBase" />
+
+    <!--AppBar style-->
+    <style name="Meadow.AppBar" parent="MeadowThemeBase">
+        <item name="android:paddingLeft">@dimen/default_padding</item>
+        <item name="android:paddingBottom">@dimen/default_padding</item>
     </style>
 
+    <!--Toolbar style-->
+    <style name="Meadow.Toolbar" parent="MeadowThemeBase" />
+
+    <!--RecyclerView-->
+    <style name="Meadow.RecyclerView" parent="MeadowThemeBase">
+        <item name="android:padding">@dimen/default_h_padding</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+    </style>
+
+    <!-- List Card View-->
+    <style name="Meadow.ListCardView">
+
+    </style>
 </resources>

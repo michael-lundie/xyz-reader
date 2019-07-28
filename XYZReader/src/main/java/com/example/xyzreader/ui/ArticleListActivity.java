@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -15,10 +16,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.animation.GridLayoutAnimationController;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
@@ -66,9 +69,16 @@ public class ArticleListActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_articles_list);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        int actionbarHeight = R.attr.actionBarSize;
+        Drawable dr = getResources().getDrawable(R.drawable.logo);
+        int drawableHeight = dr.getIntrinsicHeight();
 
+        //swipeRefreshLayout.mar(8, actionbarHeight + drawableHeight, 8, 8);
 
         getSupportLoaderManager().initLoader(0, null, this);
+
+
 
         if (savedInstanceState == null) { refresh(); }
     }
@@ -118,10 +128,10 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         int columnCount = getResources().getInteger(R.integer.list_column_count);
 
-        StaggeredGridLayoutManager sglm =
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(this, columnCount);
 
-        listRecyclerView.setLayoutManager(sglm);
+        listRecyclerView.setLayoutManager(gridLayoutManager);
     }
 
     @Override
