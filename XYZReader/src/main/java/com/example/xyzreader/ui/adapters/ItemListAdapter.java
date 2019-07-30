@@ -117,7 +117,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             titleView.setPadding(2,2,2,2);
             titleView.setText(titleSpan);
 
-
             Date publishedDate = parsePublishedDate();
 
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
@@ -142,6 +141,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
                         @Override
                         public void onSuccess() {
                             // Hide our progress bar view on completion of image download.
+
 
                         }
                         @Override

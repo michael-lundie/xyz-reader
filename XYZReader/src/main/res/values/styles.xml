@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="MeadowThemeBase" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
@@ -40,10 +40,16 @@
         <item name="android:padding">@dimen/default_h_padding</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:scrollbarStyle">outsideOverlay</item>
+        <item name="android:background">@color/cardview_dark_background</item>
     </style>
 
     <!-- List Card View-->
     <style name="Meadow.ListCardView">
 
     </style>
+
+    <style name="Meadow.ListCardView.Heading" parent="MeadowThemeBase">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
 </resources>
