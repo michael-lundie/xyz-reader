@@ -15,7 +15,8 @@
      limitations under the License.
 -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <style name="MeadowThemeBase" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
@@ -43,13 +44,21 @@
         <item name="android:background">@color/cardview_dark_background</item>
     </style>
 
-    <!-- List Card View-->
+    <!-- Article List Card View-->
     <style name="Meadow.ListCardView">
-
+        <item name="cardPreventCornerOverlap">false</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="cardUseCompatPadding">false</item>
+        <item name="android:layout_margin">4dp</item>
     </style>
 
     <style name="Meadow.ListCardView.Heading" parent="MeadowThemeBase">
         <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">50dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">4</item>
+        <item name="android:layout_gravity">bottom</item>
     </style>
 
 </resources>

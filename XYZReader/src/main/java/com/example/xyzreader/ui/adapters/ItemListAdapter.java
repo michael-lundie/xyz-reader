@@ -1,13 +1,11 @@
 package com.example.xyzreader.ui.adapters;
 
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +18,6 @@ import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.ui.ArticleListActivity;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
-
-import java.text.ParseException;
-import java.util.Date;
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +44,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         return mCursor.getLong(ArticleLoader.Query._ID);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
@@ -59,7 +54,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ItemListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemListAdapter.ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         Uri uri = ItemsContract.Items.buildItemUri(getItemId(position));
         holder.bind(mListener, uri);
@@ -90,30 +85,32 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
             Picasso.get().load(imageUrl).into(thumbnailView,
                 PicassoPalette.with(imageUrl, thumbnailView)
-                        .use(PicassoPalette.Profile.VIBRANT)
-                        .intoCallBack(new PicassoPalette.CallBack() {
-                            @Override
-                            public void onPaletteLoaded(Palette palette) {
-                                int color = palette.getVibrantColor(ContextCompat.getColor(mView.getContext(), R.color.primary));
-                                Log.e(LOG_TAG, "Color int --> " + color);
+                    .use(PicassoPalette.Profile.VIBRANT)
+                    .intoCallBack(new PicassoPalette.CallBack() {
+                        @Override
+                        public void onPaletteLoaded(Palette palette) {
+                            // Get the returned color from the PicassoPalette library.
+                            int color = palette.getVibrantColor(ContextCompat.getColor(mView.getContext(), R.color.primary));
 
-                                int R = (color >> 16) & 0xff;
-                                int G = (color >>  8) & 0xff;
-                                int B = (color      ) & 0xff;
+                            // Return RGB values (we are replacing alpha, so no need for that.
+                            int R = (color >> 16) & 0xff;
+                            int G = (color >>  8) & 0xff;
+                            int B = (color      ) & 0xff;
 
-                                int alphaColor = (150 & 0xff) << 24 | (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
-                                titleView.setBackgroundColor(alphaColor);
-                                Log.e(LOG_TAG, "New Color int ##-->>" + color);
+                            //Apply semi-opaque alpha value.
+                            int alphaColor = (150 & 0xff) << 24 | (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
 
-                            }
-                        }));
-            int width= thumbnailView.getMeasuredWidth();
+                            // Set generate color to titleView background.
+                            titleView.setBackgroundColor(alphaColor);
+                        }
+                    }));
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(uri);
                 }
+
             });
         }
     }
