@@ -22,10 +22,10 @@ public class TextRecyclerAdapter extends RecyclerView.Adapter<TextRecyclerAdapte
     String textChunk;
     private TextRecyclerFeeder recyclerFeeder;
 
-    public TextRecyclerAdapter(String textChunk) {
+    public TextRecyclerAdapter(String inputString) {
         Log.e(LOG_TAG, "--> Notice confirmed. Setting up Adapter");
-        this.textChunk = textChunk;
-        this.recyclerFeeder = new TextRecyclerFeeder(textChunk);
+        this.textChunk = inputString;
+        this.recyclerFeeder = new TextRecyclerFeeder(inputString);
     }
 
     @NonNull
@@ -38,7 +38,6 @@ public class TextRecyclerAdapter extends RecyclerView.Adapter<TextRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         holder.bind(recyclerFeeder.getTextForPosition(position));
     }
 
@@ -51,7 +50,7 @@ public class TextRecyclerAdapter extends RecyclerView.Adapter<TextRecyclerAdapte
 
         @BindView(R.id.text_recycler_tv) TextView recyclerItemTV;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

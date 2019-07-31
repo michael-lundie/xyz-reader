@@ -20,6 +20,7 @@
             android:theme="@style/Meadow.RecyclerView"
             tools:listitem="@layout/list_item_article"
             tools:layoutManager="android.support.v7.widget.GridLayoutManager"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>

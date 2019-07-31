@@ -1,6 +1,12 @@
 package com.example.xyzreader.ui.utils;
 
+import android.util.Log;
+
+import com.example.xyzreader.ui.adapters.TextRecyclerAdapter;
+
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A utility class responsible for taking a large input string/text passage, splitting each
@@ -12,9 +18,12 @@ import java.util.ArrayList;
     // we need to observe the current item the user is looking at, then make sure we load the next
     // batch of text.
 public class TextRecyclerFeeder {
+    private static final String LOG_TAG = TextRecyclerFeeder.class.toString();
 
     String inputString;
     ArrayList<String> textChunkArray;
+
+    int currentFeedIndex;
 
 
     public TextRecyclerFeeder(String inputString) {
@@ -22,7 +31,19 @@ public class TextRecyclerFeeder {
         initFeeder();
     }
 
+    private int getNumberOfParagraphs(String inputString) {
+        int numberOfParagraphs = 0;
+        Pattern pattern = Pattern.compile("\\\\r\\\\n\\\\r\\\\n");
+        Matcher matcher = pattern.matcher(inputString);
+        while (matcher.find()) {
+            numberOfParagraphs++; //TODO: Check this is working with large text.
+        } return numberOfParagraphs;
+
+    }
+
     private void initFeeder() {
+        int count = getNumberOfParagraphs(inputString);
+        Log.e(LOG_TAG, "Total number of Paragraphs -->>> " + count);
         if (textChunkArray == null) {
             textChunkArray = new ArrayList<>();
         }
@@ -34,6 +55,7 @@ public class TextRecyclerFeeder {
         //Gets the index where we want to end splitting the string
         // so we are not working our way through the whole set of data at once. The user
         // may not want to scroll that far down!
+        // Currently we are splitting at the end of each paragraph.
         // It would be wise to consider splitting this data into pages also. it is a lot to scroll through
 
         int splitPosition = ordinalIndexOf(inputString.substring(startIndex), "\\r\\n\\r\\n",7 );
