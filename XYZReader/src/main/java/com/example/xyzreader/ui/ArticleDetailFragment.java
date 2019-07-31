@@ -145,7 +145,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 //            }
 //        });
 
-        //bindViews();
+        bindViews();
 
         return mRootView;
     }
@@ -171,13 +171,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         LinearLayoutManager textRecyclerLayoutManager = new LinearLayoutManager(this.getContext());
         bodyTextRv.setLayoutManager(textRecyclerLayoutManager);
         bodyTextRv.setAdapter(textRecyclerAdapter);
-//        TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
-//        TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
-//        bylineView.setMovementMethod(new LinkMovementMethod());
-        //TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
 
-
-        //bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
             Log.e(LOG_TAG, "Cursor is not null");
@@ -268,9 +262,10 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             mCursor = null;
         }
         Log.e(LOG_TAG, "Cursor has loaded, setting up adapter");
+        String articleString = cursor.getString(ArticleLoader.Query.BODY);
 
-        textRecyclerAdapter = new TextRecyclerAdapter(
-                cursor.getString(ArticleLoader.Query.BODY));
+        Log.e(LOG_TAG, "Sending following string to RecyclerAdapter ---> " + articleString);
+        textRecyclerAdapter = new TextRecyclerAdapter(articleString);
 
         bindViews();
     }

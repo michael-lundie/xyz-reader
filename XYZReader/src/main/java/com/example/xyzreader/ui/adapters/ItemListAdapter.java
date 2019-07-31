@@ -22,6 +22,9 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Adapter class for main ItemList view.
+ */
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
 
     private static final String LOG_TAG = ArticleListActivity.class.toString();
@@ -47,7 +50,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_article, parent, false);
         return new ViewHolder(view);
@@ -56,6 +58,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ItemListAdapter.ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
+        // Get current items position from ItemsContract
         Uri uri = ItemsContract.Items.buildItemUri(getItemId(position));
         holder.bind(mListener, uri);
     }
@@ -65,6 +68,9 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         return mCursor.getCount();
     }
 
+    /**
+     * Simple ViewHolder class for our recycler view items.
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
         final View mView;
@@ -80,7 +86,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         void bind(final OnItemClickListener listener, final Uri uri) {
 
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
-
             String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
 
             Picasso.get().load(imageUrl).into(thumbnailView,
@@ -90,27 +95,31 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
                         @Override
                         public void onPaletteLoaded(Palette palette) {
                             // Get the returned color from the PicassoPalette library.
-                            int color = palette.getVibrantColor(ContextCompat.getColor(mView.getContext(), R.color.primary));
+                            int color = palette.getVibrantColor(
+                                    ContextCompat.getColor(mView.getContext(), R.color.primary));
 
                             // Return RGB values (we are replacing alpha, so no need for that.
+                            // Docs: https://developer.android.com/reference/android/graphics/Color
+                            // Note that we can't reliably use Color api methods, since minimum API is 19
                             int R = (color >> 16) & 0xff;
                             int G = (color >>  8) & 0xff;
                             int B = (color      ) & 0xff;
 
-                            //Apply semi-opaque alpha value.
-                            int alphaColor = (150 & 0xff) << 24 | (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
+                            // Create a new base color with same values, but applying semi-opaque alpha value
+                            int alphaColor = (150 & 0xff) << 24 |
+                                    (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
 
                             // Set generate color to titleView background.
                             titleView.setBackgroundColor(alphaColor);
                         }
                     }));
 
+            // Set up our onClickListener interface
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(uri);
                 }
-
             });
         }
     }
