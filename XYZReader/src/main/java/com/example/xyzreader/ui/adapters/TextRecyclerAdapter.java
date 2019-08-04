@@ -38,12 +38,13 @@ public class TextRecyclerAdapter extends RecyclerView.Adapter<TextRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(recyclerFeeder.getTextForPosition(position));
+//        holder.bind(recyclerFeeder.getTextForPosition(position));
+        holder.bind(recyclerFeeder.getParagraph(position));
     }
 
     @Override
     public int getItemCount() {
-        return 8;
+        return recyclerFeeder.getParagraphCount();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

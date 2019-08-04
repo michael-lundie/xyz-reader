@@ -1,23 +1,17 @@
 package com.example.xyzreader.ui;
 
 
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.app.ShareCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.format.DateUtils;
-import android.text.method.LinkMovementMethod;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +19,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.ui.adapters.TextRecyclerAdapter;
-import com.example.xyzreader.ui.utils.ImageLoaderHelper;
+import com.github.florent37.picassopalette.PicassoPalette;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -168,18 +161,22 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         if (mRootView == null) {
             return;
         }
-        LinearLayoutManager textRecyclerLayoutManager = new LinearLayoutManager(this.getContext());
-        bodyTextRv.setLayoutManager(textRecyclerLayoutManager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        bodyTextRv.setLayoutManager(layoutManager);
         bodyTextRv.setAdapter(textRecyclerAdapter);
 
 
         if (mCursor != null) {
+            // Load the hero image
+
             Log.e(LOG_TAG, "Cursor is not null");
             mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
             mRootView.animate().alpha(1);
 //            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+
             Date publishedDate = parsePublishedDate();
+
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
 //                bylineView.setText(Html.fromHtml(
 //                        DateUtils.getRelativeTimeSpanString(

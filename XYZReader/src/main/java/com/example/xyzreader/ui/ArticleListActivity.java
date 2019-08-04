@@ -78,8 +78,6 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         getSupportLoaderManager().initLoader(0, null, this);
 
-
-
         if (savedInstanceState == null) { refresh(); }
     }
 
