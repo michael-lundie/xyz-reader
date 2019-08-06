@@ -1,7 +1,7 @@
 package com.example.xyzreader.ui;
 
-
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
@@ -77,25 +77,6 @@ public class ArticleDetailActivity extends AppCompatActivity
             }
         });
 
-//        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//                super.onPageScrollStateChanged(state);
-//                mUpButton.animate()
-//                        .alpha((state == ViewPager.SCROLL_STATE_IDLE) ? 1f : 0f)
-//                        .setDuration(300);
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                if (mCursor != null) {
-//                    mCursor.moveToPosition(position);
-//                }
-//                mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
-//                updateUpButtonPosition();
-//            }
-//        });
-
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getData() != null) {
                 Log.e(LOG_TAG, "Retrieving URI <<-- " + getIntent().getData());
@@ -119,32 +100,43 @@ public class ArticleDetailActivity extends AppCompatActivity
         ctLayout.setTitle(title);
 
         String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
-//
-//        Picasso.get().load(imageUrl).into(heroIv,
-//                PicassoPalette.with(imageUrl, heroIv)
-//                        .use(PicassoPalette.Profile.VIBRANT)
-//                        .intoCallBack(new PicassoPalette.CallBack() {
-//                            @Override
-//                            public void onPaletteLoaded(Palette palette) {
-//                                // Get the returned color from the PicassoPalette library.
-//                                int color = palette.getVibrantColor(
-//                                        ContextCompat.getColor(mPager.getContext(), R.color.primary));
-//
-//                                // Return RGB values (we are replacing alpha, so no need for that.
-//                                // Docs: https://developer.android.com/reference/android/graphics/Color
-//                                // Note that we can't reliably use Color api methods, since minimum API is 19
-//                                int R = (color >> 16) & 0xff;
-//                                int G = (color >>  8) & 0xff;
-//                                int B = (color      ) & 0xff;
-//
-//                                // Create a new base color with same values, but applying semi-opaque alpha value
-//                                int alphaColor = (150 & 0xff) << 24 |
-//                                        (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
-//
-//                                // Set generate color to titleView background.
-//                                toolbar.setBackgroundColor(alphaColor);
-//                            }
-//                        }));
+
+        Picasso.get().load(imageUrl).into(heroIv,
+                PicassoPalette.with(imageUrl, heroIv)
+                        .use(PicassoPalette.Profile.VIBRANT)
+                        .intoCallBack(new PicassoPalette.CallBack() {
+                            @Override
+                            public void onPaletteLoaded(Palette palette) {
+                                // Get the returned color from the PicassoPalette library.
+                                int toolbarColor = palette.getVibrantColor(
+                                        ContextCompat.getColor(mPager.getContext(), R.color.primary));
+
+                                // Return RGB values (we are replacing alpha, so no need for that.)
+                                // https://developer.android.com/reference/android/graphics/Color
+                                // Note that we can't reliably use Color api methods, since minimum
+                                // API is 19
+                                int toolbarColor_R = (toolbarColor >> 16) & 0xff;
+                                int toolbarColor_G = (toolbarColor >> 8) & 0xff;
+                                int toolbarColor_B = (toolbarColor) & 0xff;
+
+                                // Create a new base color with same values, but applying
+                                // semi-opaque alpha value
+                                int alphaColor = (150 & 0xff) << 24 |
+                                        (toolbarColor_R & 0xff) << 16 |
+                                        (toolbarColor_G & 0xff) << 8 |
+                                        (toolbarColor_B & 0xff);
+
+                                // Set generate color to titleView background.
+                                toolbar.setBackgroundColor(alphaColor);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    int statusColor = palette.getVibrantColor(
+                                            ContextCompat.getColor(mPager.getContext(),
+                                                    R.color.primary_dark));
+                                    getWindow().setStatusBarColor(statusColor);
+                                }
+                            }
+                        }));
     }
 
     @Override
