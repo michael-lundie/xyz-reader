@@ -3,7 +3,7 @@ package com.example.xyzreader.ui;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
@@ -52,18 +52,14 @@ public class ArticleDetailActivity extends AppCompatActivity
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-
         getSupportLoaderManager().initLoader(0, null, this);
 
         mPagerAdapter = new ItemPagerAdapter(getSupportFragmentManager(), mCursor);
-
         mPager.setAdapter(mPagerAdapter);
 
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 
             @Override
             public void onPageSelected(int position) {
@@ -72,9 +68,7 @@ public class ArticleDetailActivity extends AppCompatActivity
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) { }
         });
 
         if (savedInstanceState == null) {
@@ -86,9 +80,13 @@ public class ArticleDetailActivity extends AppCompatActivity
                 selectedItemId = mStartId;
             }
         }
+        //TODO: Remove logs
+        Log.e(LOG_TAG, "Selected ITem ID: " + selectedItemId);
     }
 
     private void setToolbarTitleAndImage(int position) {
+
+        Log.e(LOG_TAG, "Setting toolbars position: " + position);
         //TODO: Handle errors here
         if (mCursor == null) {
             Log.e(LOG_TAG, "CURSOR IS NULL");
@@ -120,20 +118,24 @@ public class ArticleDetailActivity extends AppCompatActivity
                                 int toolbarColor_B = (toolbarColor) & 0xff;
 
                                 // Create a new base color with same values, but applying
-                                // semi-opaque alpha value
+                                // a semi-opaque alpha value
                                 int alphaColor = (150 & 0xff) << 24 |
                                         (toolbarColor_R & 0xff) << 16 |
                                         (toolbarColor_G & 0xff) << 8 |
                                         (toolbarColor_B & 0xff);
 
                                 // Set generate color to titleView background.
-                                toolbar.setBackgroundColor(alphaColor);
+                                toolbar.setBackgroundColor(ContextCompat.getColor(
+                                        mPager.getContext(),R.color.transparent));
+
+                                ctLayout.setContentScrimColor(toolbarColor);
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    int statusColor = palette.getVibrantColor(
+                                    int statusColor = palette.getDarkVibrantColor(
                                             ContextCompat.getColor(mPager.getContext(),
                                                     R.color.primary_dark));
-                                    getWindow().setStatusBarColor(statusColor);
+
+                                    getWindow().setStatusBarColor(alphaColor);
                                 }
                             }
                         }));

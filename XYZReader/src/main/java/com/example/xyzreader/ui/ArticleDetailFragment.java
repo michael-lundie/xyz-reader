@@ -46,12 +46,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     private Cursor mCursor;
     private long mItemId;
     private View mRootView;
-    private int mMutedColor = 0xFF333333;
-
-    private View mPhotoContainerView;
-    private ImageView mPhotoView;
-
-    private boolean mIsCard = false;
 
     TextRecyclerAdapter textRecyclerAdapter;
 
@@ -88,8 +82,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             mItemId = getArguments().getLong(ARG_ITEM_ID);
         }
 
-        mIsCard = getResources().getBoolean(R.bool.detail_is_card);
-
         setHasOptionsMenu(true);
     }
 
@@ -125,8 +117,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 //                updateStatusBar();
 //            }
 //        });
-
-
 
 //        mRootView.findViewById(R.id.share_fab).setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -233,8 +223,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         }
     }
 
-
-
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.e(LOG_TAG, "Creating cursor");
@@ -260,8 +248,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         }
         Log.e(LOG_TAG, "Cursor has loaded, setting up adapter");
         String articleString = cursor.getString(ArticleLoader.Query.BODY);
-
-        Log.e(LOG_TAG, "Sending following string to RecyclerAdapter ---> " + articleString);
         textRecyclerAdapter = new TextRecyclerAdapter(articleString);
 
         bindViews();

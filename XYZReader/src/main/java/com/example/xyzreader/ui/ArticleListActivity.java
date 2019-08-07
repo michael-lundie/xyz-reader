@@ -32,6 +32,8 @@ import com.example.xyzreader.ui.adapters.ItemListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.support.v4.widget.SwipeRefreshLayout.*;
+
 /**
  * An activity representing a list of Articles. This activity has different presentations for
  * handset and tablet-size devices. On handsets, the activity presents a list of items, which when
@@ -58,6 +60,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         public void onReceive(Context context, Intent intent) {
             if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
                 mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
+                Log.e(LOG_TAG, "Refreshing Status --> " + mIsRefreshing);
                 updateRefreshingUI();
             }
         }
@@ -74,7 +77,13 @@ public class ArticleListActivity extends AppCompatActivity implements
         Drawable dr = getResources().getDrawable(R.drawable.logo);
         int drawableHeight = dr.getIntrinsicHeight();
 
-        //swipeRefreshLayout.mar(8, actionbarHeight + drawableHeight, 8, 8);
+        swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.e(LOG_TAG, "onRefresh called.");
+                refresh();
+            }
+        });
 
         getSupportLoaderManager().initLoader(0, null, this);
 
