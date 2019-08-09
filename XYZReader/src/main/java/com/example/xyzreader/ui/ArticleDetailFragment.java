@@ -52,7 +52,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     @BindView(R.id.detail_layout) CoordinatorLayout detailCL;
     @BindView(R.id.body_text_recycler) RecyclerView bodyTextRv;
 
-
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
@@ -133,19 +132,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         return mRootView;
     }
 
-
-
-    private Date parsePublishedDate() {
-        try {
-            String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
-            return dateFormat.parse(date);
-        } catch (ParseException ex) {
-            Log.e(LOG_TAG, ex.getMessage());
-            Log.i(LOG_TAG, "passing today's date");
-            return new Date();
-        }
-    }
-
     private void bindViews() {
         Log.e(LOG_TAG, "BindView Starting");
         if (mRootView == null) {
@@ -155,72 +141,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         bodyTextRv.setLayoutManager(layoutManager);
         bodyTextRv.setAdapter(textRecyclerAdapter);
 
-
-        if (mCursor != null) {
-            // Load the hero image
-
-            Log.e(LOG_TAG, "Cursor is not null");
-            mRootView.setAlpha(0);
-            mRootView.setVisibility(View.VISIBLE);
-            mRootView.animate().alpha(1);
-//            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
-
-            Date publishedDate = parsePublishedDate();
-
-            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-//                bylineView.setText(Html.fromHtml(
-//                        DateUtils.getRelativeTimeSpanString(
-//                                publishedDate.getTime(),
-//                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-//                                DateUtils.FORMAT_ABBREV_ALL).toString()
-//                                + " by <font color='#ffffff'>"
-//                                + mCursor.getString(ArticleLoader.Query.AUTHOR)
-//                                + "</font>"));
-
-            } else {
-                // If date is before 1902, just show the string
-//                bylineView.setText(Html.fromHtml(
-//                        outputFormat.format(publishedDate) + " by <font color='#ffffff'>"
-//                        + mCursor.getString(ArticleLoader.Query.AUTHOR)
-//                                + "</font>"));
-
-            }
-            Log.e(LOG_TAG, "Begin Formatting text");
-            //TODO: Use recycler view here
-            //bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).substring(1500).replaceAll("(\r\n|\n)", "<br />")));
-            //bodyView.setText("temp");
-
-//            Log.e(LOG_TAG, "Getting Image");
-//            ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
-//                    .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
-//                        @Override
-//                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-//
-//                            Log.e(LOG_TAG, "Image onResponse method called");
-//                            Bitmap bitmap = imageContainer.getBitmap();
-//                            if (bitmap != null) {
-//                                Log.e(LOG_TAG, "Bitmap not null");
-//
-//                                Palette p = Palette.generate(bitmap, 12);
-//                                mMutedColor = p.getDarkMutedColor(0xFF333333);
-//                                mPhotoView.setImageBitmap(imageContainer.getBitmap());
-//                                mRootView.findViewById(R.id.meta_bar)
-//                                        .setBackgroundColor(mMutedColor);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onErrorResponse(VolleyError volleyError) {
-//                            Log.e(LOG_TAG, "Volley error");
-//                        }
-//                    });
-        } else {
-            mRootView.setVisibility(View.GONE);
-            //TODO: Improve error handling.
-//            titleView.setText("N/A");
-//            bylineView.setText("N/A" );
-//F
-        }
     }
 
     @Override

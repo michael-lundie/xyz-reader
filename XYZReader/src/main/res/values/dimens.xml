@@ -1,7 +1,8 @@
 <resources>
     <!-- defaults -->
-    <dimen name="default_padding">8dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
     <dimen name="default_h_padding">4dp</dimen>
+    <dimen name="collapsing_tv_final_padding">72dp</dimen>
 
     <!-- detail -->
 

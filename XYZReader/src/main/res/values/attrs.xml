@@ -2,4 +2,12 @@
     <declare-styleable name="DrawInsetsFrameLayout">
         <attr name="insetBackground" format="color|reference" />
     </declare-styleable>
+    <!--Stylable for collapsing subtitle text view -->
+    <declare-styleable name="CollapsingSubtitleBehavior">
+        <attr name="startLeftPadding" format="dimension"/>
+        <attr name="finalLeftPadding" format="dimension"/>
+        <attr name="startToolbarPosition" format="dimension"/>
+        <attr name="startBottomPadding" format="dimension"/>
+        <attr name="finalMarginTop" format="dimension"/>
+    </declare-styleable>
 </resources>

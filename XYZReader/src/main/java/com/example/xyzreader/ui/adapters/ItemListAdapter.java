@@ -27,10 +27,10 @@ import butterknife.ButterKnife;
  */
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
 
-    private static final String LOG_TAG = ArticleListActivity.class.toString();
+    private static final String LOG_TAG = ItemListAdapter.class.getSimpleName();
 
     public interface OnItemClickListener {
-        void onItemClick(Uri uri);
+        void onItemClick(Uri uri, int position, int alphaColor, int vibrantColor);
     }
 
     private Cursor mCursor;
@@ -77,6 +77,9 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         @BindView(R.id.thumbnail) ImageView thumbnailView;
         @BindView(R.id.article_title) TextView titleView;
 
+        int alphaColor;
+        int vibrantColor;
+
         ViewHolder(View view) {
             super(view);
             mView = view;
@@ -95,18 +98,19 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
                         @Override
                         public void onPaletteLoaded(Palette palette) {
                             // Get the returned color from the PicassoPalette library.
-                            int color = palette.getVibrantColor(
+                            vibrantColor = palette.getVibrantColor(
                                     ContextCompat.getColor(mView.getContext(), R.color.primary));
 
                             // Return RGB values (we are replacing alpha, so no need for that.
                             // Docs: https://developer.android.com/reference/android/graphics/Color
                             // Note that we can't reliably use Color api methods, since minimum API is 19
-                            int R = (color >> 16) & 0xff;
-                            int G = (color >>  8) & 0xff;
-                            int B = (color      ) & 0xff;
+                            int R = (vibrantColor >> 16) & 0xff;
+                            int G = (vibrantColor >>  8) & 0xff;
+                            int B = (vibrantColor      ) & 0xff;
 
                             // Create a new base color with same values, but applying semi-opaque alpha value
-                            int alphaColor = (150 & 0xff) << 24 |
+
+                            alphaColor = (150 & 0xff) << 24 |
                                     (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
 
                             // Set generate color to titleView background.
@@ -118,7 +122,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(uri);
+                    listener.onItemClick(uri, getAdapterPosition(), alphaColor, vibrantColor);
                 }
             });
         }

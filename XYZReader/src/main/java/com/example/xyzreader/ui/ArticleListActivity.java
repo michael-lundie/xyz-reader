@@ -122,11 +122,16 @@ public class ArticleListActivity extends AppCompatActivity implements
         listAdapter = new ItemListAdapter(cursor,
                 new ItemListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Uri uri) {
+            public void onItemClick(Uri uri, int position, int alphaColor,
+                                    int vibrantColor) {
                 //TODO: Remove LOG
                 Log.e(LOG_TAG, "Requesting URI --> " + uri);
-                startActivity(new Intent(
-                        Intent.ACTION_VIEW, uri));
+
+                Intent detailActivityIntent = new Intent(Intent.ACTION_VIEW, uri);
+                detailActivityIntent.putExtra("position", position)
+                                    .putExtra("alphaColor", alphaColor)
+                                    .putExtra("vibrantColor", vibrantColor);
+                startActivity(detailActivityIntent);
             }
         });
 
