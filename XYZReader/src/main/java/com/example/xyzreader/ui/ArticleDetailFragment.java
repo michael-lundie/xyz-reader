@@ -6,29 +6,17 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.ui.adapters.TextRecyclerAdapter;
-import com.github.florent37.picassopalette.PicassoPalette;
-import com.squareup.picasso.Picasso;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,12 +39,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
     @BindView(R.id.detail_layout) CoordinatorLayout detailCL;
     @BindView(R.id.body_text_recycler) RecyclerView bodyTextRv;
-
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
-    // Use default locale format
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
-    // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,11 +65,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
         setHasOptionsMenu(true);
     }
-
-    public ArticleDetailActivity getActivityCast() {
-        return (ArticleDetailActivity) getActivity();
-    }
-
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -104,28 +82,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
         ButterKnife.bind(this, mRootView);
-
-
-//        mScrollView = (ObservableScrollView) mRootView.findViewById(R.id.scrollview);
-//        mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
-//            @Override
-//            public void onScrollChanged() {
-//                mScrollY = mScrollView.getScrollY();
-//                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
-//                mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
-//                updateStatusBar();
-//            }
-//        });
-
-//        mRootView.findViewById(R.id.share_fab).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
-//                        .setType("text/plain")
-//                        .setText("Some sample text")
-//                        .getIntent(), getString(R.string.action_share)));
-//            }
-//        });
 
         bindViews();
 
@@ -161,15 +117,18 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
         mCursor = cursor;
 
-        if (mCursor != null && !mCursor.moveToFirst()) {
+        if (mCursor != null && cursor.getCount()>0) {
+            cursor.moveToFirst();
             Log.e(LOG_TAG, "Error reading item detail cursor");
+            textRecyclerAdapter = new TextRecyclerAdapter(
+                    cursor.getString(ArticleLoader.Query.BODY),
+                    cursor.getString(ArticleLoader.Query.PUBLISHED_DATE));
+
             mCursor.close();
             mCursor = null;
         }
         Log.e(LOG_TAG, "Cursor has loaded, setting up adapter");
-        textRecyclerAdapter = new TextRecyclerAdapter(
-                cursor.getString(ArticleLoader.Query.BODY),
-                cursor.getString(ArticleLoader.Query.PUBLISHED_DATE));
+
 
         bindViews();
     }
