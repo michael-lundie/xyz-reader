@@ -1,4 +1,4 @@
-package com.example.xyzreader.ui.utils;
+package com.example.xyzreader.utils;
 
 import android.util.Log;
 import android.util.SparseIntArray;

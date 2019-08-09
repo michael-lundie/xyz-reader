@@ -15,12 +15,13 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="@dimen/default_h_padding"
         android:textSize="16sp"
+        app:startRightMargin="@dimen/default_padding"
         app:finalMarginTop="16dp"
         app:layout_behavior="com.example.xyzreader.ui.layout.CollapsingSubtitleBehavior"
         app:startLeftPadding="2dp"
         android:elevation="8dp"
         app:startBottomPadding="@dimen/default_padding"
-        app:finalLeftPadding="36dp"
+        app:finalLeftPadding="38dp"
         android:text="by Michael Lundie"/>
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -65,19 +66,11 @@
         </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/article_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="test"/>
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
 </android.support.design.widget.CoordinatorLayout>

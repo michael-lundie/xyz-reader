@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is a simple date header for our recycler text view. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/date_recycler_header"
+    android:paddingLeft="@dimen/default_padding"
+    android:paddingRight="@dimen/default_padding"
+    android:paddingTop="@dimen/default_h_padding"
+    android:paddingBottom="@dimen/default_h_padding"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>

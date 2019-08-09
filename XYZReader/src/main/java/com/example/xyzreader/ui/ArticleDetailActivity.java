@@ -3,7 +3,6 @@ package com.example.xyzreader.ui;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
@@ -11,8 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,10 +21,7 @@ import com.example.xyzreader.ui.adapters.ItemPagerAdapter;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +37,6 @@ public class ArticleDetailActivity extends AppCompatActivity
     @BindView(R.id.view_pager) ViewPager mPager;
     @BindView(R.id.hero_image)ImageView heroIv;
     @BindView(R.id.subtitle) TextView subtitleTV;
-    @BindView(R.id.article_date) TextView dateTV;
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout ctLayout;
     @BindView(R.id.toolbar)Toolbar toolbar;
 
@@ -54,12 +47,6 @@ public class ArticleDetailActivity extends AppCompatActivity
     private ItemPagerAdapter mPagerAdapter;
     private int selectedPosition;
     private int alphaColor;
-
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
-    // Use default locale format
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
-    // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +113,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 
         setSubtitle();
         setToolbarTitleAndImage();
-        setDateTime();
     }
 
     private void setToolbarTitleAndImage() {
@@ -180,22 +166,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         subtitleTV.setText(subtitle);
     }
 
-    private void setDateTime() {
-        Date publishedDate = parsePublishedDate();
-
-        if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-            dateTV.setText(Html.fromHtml(
-                    DateUtils.getRelativeTimeSpanString(
-                            publishedDate.getTime(),
-                            System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                            DateUtils.FORMAT_ABBREV_ALL).toString()));
-
-        } else {
-            // If date is before 1902, just show the string
-            dateTV.setText(outputFormat.format(publishedDate));
-        }
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return ArticleLoader.newAllArticlesInstance(this);
@@ -237,17 +207,6 @@ public class ArticleDetailActivity extends AppCompatActivity
     private void setStatusBarColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(color);
-        }
-    }
-
-    private Date parsePublishedDate() {
-        try {
-            String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
-            return dateFormat.parse(date);
-        } catch (ParseException ex) {
-            Log.e(LOG_TAG, ex.getMessage());
-            Log.i(LOG_TAG, "passing today's date");
-            return new Date();
         }
     }
 }

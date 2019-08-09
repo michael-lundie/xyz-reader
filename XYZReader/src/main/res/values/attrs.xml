@@ -8,6 +8,7 @@
         <attr name="finalLeftPadding" format="dimension"/>
         <attr name="startToolbarPosition" format="dimension"/>
         <attr name="startBottomPadding" format="dimension"/>
+        <attr name="startRightMargin" format="dimension"/>
         <attr name="finalMarginTop" format="dimension"/>
     </declare-styleable>
 </resources>

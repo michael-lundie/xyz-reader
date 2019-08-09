@@ -167,8 +167,9 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             mCursor = null;
         }
         Log.e(LOG_TAG, "Cursor has loaded, setting up adapter");
-        String articleString = cursor.getString(ArticleLoader.Query.BODY);
-        textRecyclerAdapter = new TextRecyclerAdapter(articleString);
+        textRecyclerAdapter = new TextRecyclerAdapter(
+                cursor.getString(ArticleLoader.Query.BODY),
+                cursor.getString(ArticleLoader.Query.PUBLISHED_DATE));
 
         bindViews();
     }

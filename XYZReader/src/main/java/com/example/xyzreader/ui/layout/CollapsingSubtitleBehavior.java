@@ -4,17 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
-
-import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 /**
  * Class describes and executes coordinator layout behaviors for a subtitle text view,
@@ -30,6 +26,7 @@ public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextV
     private Context mContext;
 
     private float startPaddingLeft;
+    private float startMarginRight;
     private float finalMarginTop;
     private float finalPaddingLeft;
     private float startPaddingBottom;
@@ -43,11 +40,11 @@ public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextV
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CollapsingSubtitleBehavior);
             startPaddingLeft = a.getDimension(R.styleable.CollapsingSubtitleBehavior_startLeftPadding, 0);
             finalPaddingLeft = a.getDimension(R.styleable.CollapsingSubtitleBehavior_finalLeftPadding, 0);
+            startMarginRight = a.getDimension(R.styleable.CollapsingSubtitleBehavior_startRightMargin, 0);
             startPaddingBottom = a.getDimension(R.styleable.CollapsingSubtitleBehavior_startBottomPadding, 0);
             finalMarginTop = a.getDimension(R.styleable.CollapsingSubtitleBehavior_finalMarginTop, 0);
             a.recycle();
         }
-
     }
 
     @Override
@@ -75,14 +72,10 @@ public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextV
         childPosition = childPosition - startPaddingBottom * (1f - percentage);
 
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
-//        lp.leftMargin = (int) ((percentage * finalPaddingLeft) + startPaddingLeft);
-//        lp.rightMargin = 16;
-        lp.setMargins(
-                (int) ((percentage * finalPaddingLeft) + startPaddingLeft),
-                64,
-                16,
-                0
-        );
+
+        lp.leftMargin = (int) ((percentage * finalPaddingLeft) + startPaddingLeft);
+        lp.rightMargin = (int) startMarginRight;
+
         child.setLayoutParams(lp);
 
         child.setY(childPosition);
@@ -96,7 +89,6 @@ public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextV
         if (finalPaddingLeft == 0)
             finalPaddingLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.collapsing_tv_final_padding);
     }
-
 
     private int getToolbarHeight() {
         TypedValue toolbarHeightTypedValue = new TypedValue();
