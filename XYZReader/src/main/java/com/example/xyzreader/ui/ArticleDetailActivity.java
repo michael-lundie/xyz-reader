@@ -19,6 +19,7 @@ import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.ui.adapters.ItemPagerAdapter;
 import com.github.florent37.picassopalette.PicassoPalette;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
@@ -44,6 +45,8 @@ public class ArticleDetailActivity extends AppCompatActivity
     private long mStartId;
     private long selectedItemId;
 
+    private String imageUrl;
+
     private ItemPagerAdapter mPagerAdapter;
     private int selectedPosition;
     private int alphaColor;
@@ -52,8 +55,17 @@ public class ArticleDetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(null);
+        }
+
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
+
+        // This call is supported by API 19, so we don't need to worry about a version check here.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+        }
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -123,42 +135,55 @@ public class ArticleDetailActivity extends AppCompatActivity
         String title = mCursor.getString(ArticleLoader.Query.TITLE);
         ctLayout.setTitle(title);
 
-        String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
+        imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
 
-        Picasso.get().load(imageUrl).into(heroIv,
-                PicassoPalette.with(imageUrl, heroIv)
-                        .use(PicassoPalette.Profile.VIBRANT)
-                        .intoCallBack(new PicassoPalette.CallBack() {
-                            @Override
-                            public void onPaletteLoaded(Palette palette) {
-                                // Get the returned color from the PicassoPalette library.
-                                int toolbarColor = palette.getVibrantColor(
-                                        ContextCompat.getColor(mPager.getContext(), R.color.primary));
+        Picasso.get().load(imageUrl).noFade().into(heroIv, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        ArticleDetailActivity.this.supportStartPostponedEnterTransition();
+                        //supportStartPostponedEnterTransition();
 
-                                // Return RGB values (we are replacing alpha, so no need for that.)
-                                // https://developer.android.com/reference/android/graphics/Color
-                                // Note that we can't reliably use Color api methods, since minimum
-                                // API is 19
-                                int toolbarColor_R = (toolbarColor >> 16) & 0xff;
-                                int toolbarColor_G = (toolbarColor >> 8) & 0xff;
-                                int toolbarColor_B = (toolbarColor) & 0xff;
+                        PicassoPalette.with(imageUrl, heroIv)
+                                .use(PicassoPalette.Profile.VIBRANT)
+                                .intoCallBack(new PicassoPalette.CallBack() {
 
-                                // Create a new base color with same values, but applying
-                                // a semi-opaque alpha value
-                                int alphaColor = (150 & 0xff) << 24 |
-                                        (toolbarColor_R & 0xff) << 16 |
-                                        (toolbarColor_G & 0xff) << 8 |
-                                        (toolbarColor_B & 0xff);
+                                    @Override
+                                    public void onPaletteLoaded(Palette palette) {
+                                        // Get the returned color from the PicassoPalette library.
+                                        int toolbarColor = palette.getVibrantColor(
+                                                ContextCompat.getColor(mPager.getContext(), R.color.primary));
 
-                                // Set generate color to titleView background.
-                                toolbar.setBackgroundColor(ContextCompat.getColor(
-                                        mPager.getContext(),R.color.transparent));
+                                        // Return RGB values (we are replacing alpha, so no need for that.)
+                                        // https://developer.android.com/reference/android/graphics/Color
+                                        // Note that we can't reliably use Color api methods, since minimum
+                                        // API is 19
+                                        int toolbarColor_R = (toolbarColor >> 16) & 0xff;
+                                        int toolbarColor_G = (toolbarColor >> 8) & 0xff;
+                                        int toolbarColor_B = (toolbarColor) & 0xff;
 
-                                ctLayout.setContentScrimColor(toolbarColor);
-                                ctLayout.setBackgroundColor(toolbarColor);
-                                setStatusBarColor(alphaColor);
-                            }
-                        }));
+                                        // Create a new base color with same values, but applying
+                                        // a semi-opaque alpha value
+                                        int alphaColor = (150 & 0xff) << 24 |
+                                                (toolbarColor_R & 0xff) << 16 |
+                                                (toolbarColor_G & 0xff) << 8 |
+                                                (toolbarColor_B & 0xff);
+
+                                        // Set generate color to titleView background.
+                                        toolbar.setBackgroundColor(ContextCompat.getColor(
+                                                mPager.getContext(), R.color.transparent));
+
+                                        ctLayout.setContentScrimColor(toolbarColor);
+                                        ctLayout.setBackgroundColor(toolbarColor);
+                                        setStatusBarColor(alphaColor);
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        ArticleDetailActivity.this.supportStartPostponedEnterTransition();
+                    }
+                });
     }
 
     private void setSubtitle() {

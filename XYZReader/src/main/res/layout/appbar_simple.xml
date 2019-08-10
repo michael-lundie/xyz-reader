@@ -3,20 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/appbar"
+    android:padding="0dp"
+    android:layout_margin="0dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?attr/actionBarSize"
     android:theme="@style/Meadow.AppBar">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:theme="@style/Meadow.Toolbar"
-        app:layout_scrollFlags="scroll|enterAlways|snap" />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:src="@drawable/logo"
-        android:contentDescription="@string/app_name" />
+        android:clipChildren="false"
+        android:layout_marginBottom="0dp"
+        android:paddingTop="@dimen/default_h_padding"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_marginStart="@dimen/default_padding"
+            android:layout_marginTop="@dimen/default_h_padding"
+            android:layout_marginBottom="@dimen/default_h_padding"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo"
+            android:contentDescription="@string/app_name" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            app:contentInsetStart="0dp"
+            app:theme="@style/Meadow.Toolbar"
+            app:layout_scrollFlags="scroll|enterAlways|snap" />
+    </FrameLayout>
 </android.support.design.widget.AppBarLayout>

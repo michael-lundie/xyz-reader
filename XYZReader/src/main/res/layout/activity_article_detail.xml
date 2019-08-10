@@ -3,6 +3,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/transparent"
     android:fitsSystemWindows="true">
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/subtitle"
@@ -44,6 +45,7 @@
 
             <ImageView
                 android:id="@+id/hero_image"
+                android:transitionName="test_transition"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"

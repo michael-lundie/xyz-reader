@@ -4,17 +4,17 @@
     style="@style/Meadow.ListCardView"
     android:layout_width="match_parent"
     android:layout_height="200dp"
+    android:background="@color/transparent"
     android:clickable="true"
     android:focusable="true">
         <!-- Note that these values will not work if applied in styles.xml -->
         <ImageView
-            android:id="@+id/thumbnail"
+            android:id="@+id/hero_image"
             android:padding="0dp"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <TextView
-
             android:id="@+id/article_title"
             style="@style/Meadow.ListCardView.Heading"
             android:layout_width="match_parent"

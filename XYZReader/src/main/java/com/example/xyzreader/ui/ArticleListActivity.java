@@ -1,6 +1,7 @@
 package com.example.xyzreader.ui;
 
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,11 +10,15 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,6 +27,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.animation.GridLayoutAnimationController;
+import android.widget.ImageView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
@@ -73,9 +79,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        int actionbarHeight = R.attr.actionBarSize;
         Drawable dr = getResources().getDrawable(R.drawable.logo);
-        int drawableHeight = dr.getIntrinsicHeight();
 
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -123,7 +127,7 @@ public class ArticleListActivity extends AppCompatActivity implements
                 new ItemListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Uri uri, int position, int alphaColor,
-                                    int vibrantColor) {
+                                    int vibrantColor, ImageView imageView) {
                 //TODO: Remove LOG
                 Log.e(LOG_TAG, "Requesting URI --> " + uri);
 
@@ -131,7 +135,7 @@ public class ArticleListActivity extends AppCompatActivity implements
                 detailActivityIntent.putExtra("position", position)
                                     .putExtra("alphaColor", alphaColor)
                                     .putExtra("vibrantColor", vibrantColor);
-                startActivity(detailActivityIntent);
+                startActivityByApiVersion(detailActivityIntent, imageView);
             }
         });
 
@@ -149,5 +153,27 @@ public class ArticleListActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         listRecyclerView.setAdapter(null);
+    }
+
+    private void startActivityByApiVersion(Intent intent, ImageView imageView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivityWithTransition(intent, imageView);
+        } else {
+            startActivity(intent);
+        }
+    }
+
+    @RequiresApi(21)
+    private void startActivityWithTransition(Intent intent, ImageView imageView) {
+        // WARNING: Must do a version check for API 21 when calling this method.
+        // Annotation alone is not enough.
+
+        //Set exit transition to prevent flicker.
+        getWindow().setExitTransition(null);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, imageView,
+                        ViewCompat.getTransitionName(imageView));
+        startActivity(intent, options.toBundle());
     }
 }

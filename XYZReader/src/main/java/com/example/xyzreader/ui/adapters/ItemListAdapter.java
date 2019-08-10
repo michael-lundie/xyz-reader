@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,7 +31,8 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     private static final String LOG_TAG = ItemListAdapter.class.getSimpleName();
 
     public interface OnItemClickListener {
-        void onItemClick(Uri uri, int position, int alphaColor, int vibrantColor);
+        void onItemClick(Uri uri, int position, int alphaColor,
+                         int vibrantColor, ImageView imageView);
     }
 
     private Cursor mCursor;
@@ -60,7 +62,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         mCursor.moveToPosition(position);
         // Get current items position from ItemsContract
         Uri uri = ItemsContract.Items.buildItemUri(getItemId(position));
-        holder.bind(mListener, uri);
+        holder.bind(mListener, uri, position);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
 
         final View mView;
-        @BindView(R.id.thumbnail) ImageView thumbnailView;
+        @BindView(R.id.hero_image) ImageView thumbnailView;
         @BindView(R.id.article_title) TextView titleView;
 
         int alphaColor;
@@ -86,7 +88,10 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             ButterKnife.bind(this,view);
         }
 
-        void bind(final OnItemClickListener listener, final Uri uri) {
+        void bind(final OnItemClickListener listener, final Uri uri, int position) {
+
+            // Set up our transition names for use with API21+ transitions
+            ViewCompat.setTransitionName(thumbnailView, Integer.toString(position));
 
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
@@ -122,7 +127,8 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(uri, getAdapterPosition(), alphaColor, vibrantColor);
+                    listener.onItemClick(uri, getAdapterPosition(), alphaColor,
+                            vibrantColor, thumbnailView);
                 }
             });
         }

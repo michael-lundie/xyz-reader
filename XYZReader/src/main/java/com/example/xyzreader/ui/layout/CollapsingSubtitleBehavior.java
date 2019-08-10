@@ -30,7 +30,6 @@ public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextV
     private float finalMarginTop;
     private float finalPaddingLeft;
     private float startPaddingBottom;
-    private float mChangeBehaviorPoint;
 
     public CollapsingSubtitleBehavior(Context context, AttributeSet attrs) {
         mContext = context;

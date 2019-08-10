@@ -22,6 +22,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <!--Link base style in manifest-->
@@ -29,8 +30,7 @@
 
     <!--AppBar style-->
     <style name="Meadow.AppBar" parent="MeadowThemeBase">
-        <item name="android:paddingLeft">@dimen/default_padding</item>
-        <item name="android:paddingBottom">@dimen/default_padding</item>
+
     </style>
 
     <!--Toolbar style-->
