@@ -1,8 +1,10 @@
 package com.example.xyzreader.ui;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
@@ -11,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +42,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     @BindView(R.id.subtitle) TextView subtitleTV;
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout ctLayout;
     @BindView(R.id.toolbar)Toolbar toolbar;
+    @BindView(R.id.share_fab)FloatingActionButton shareFab;
 
     private Cursor mCursor;
     private long mStartId;
@@ -46,7 +50,9 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     private ItemPagerAdapter mPagerAdapter;
     private int selectedPosition;
-    private int alphaColor;
+
+    String articleTitle;
+    String articleAuthor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,12 +101,8 @@ public class ArticleDetailActivity extends AppCompatActivity
             selectedPosition = getIntent().getExtras().getInt("position");
             setStatusBarColor(getIntent().getExtras().getInt("alphaColor"));
             ctLayout.setBackgroundColor(getIntent().getExtras().getInt("vibrantColor"));
-
-            //TODO: Remove log
-            Log.e(LOG_TAG, "Passed Position from bundle --> " + selectedPosition);
         }
-        //TODO: Remove logs
-        Log.e(LOG_TAG, "Selected ITem ID: " + selectedItemId);
+
     }
 
     private void bindDataToViews(int position) {
@@ -113,6 +115,27 @@ public class ArticleDetailActivity extends AppCompatActivity
 
         setSubtitle();
         setToolbarTitleAndImage();
+        setUpFab();
+    }
+
+    private void setUpFab() {
+        final StringBuilder shareIntentText = new StringBuilder()
+                .append(this.getString(R.string.share_text_name)).append(" ")
+                .append(articleTitle).append(" ")
+                .append(this.getString(R.string.share_text_author)).append(" ")
+                .append(articleAuthor).append(".");
+
+        shareFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareIntentText.toString());
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent,
+                        view.getContext().getString(R.string.share_dialogue_title)));
+            }
+        });
     }
 
     private void setToolbarTitleAndImage() {
@@ -120,8 +143,9 @@ public class ArticleDetailActivity extends AppCompatActivity
         if (mCursor == null) {
             return;
         }
-        String title = mCursor.getString(ArticleLoader.Query.TITLE);
-        ctLayout.setTitle(title);
+
+        articleTitle = mCursor.getString(ArticleLoader.Query.TITLE);
+        ctLayout.setTitle(articleTitle);
 
         String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
 
@@ -162,8 +186,9 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void setSubtitle() {
-        String subtitle = mCursor.getString(ArticleLoader.Query.AUTHOR);
-        subtitleTV.setText(subtitle);
+
+        articleAuthor = mCursor.getString(ArticleLoader.Query.AUTHOR);
+        subtitleTV.setText(articleAuthor);
     }
 
     @Override

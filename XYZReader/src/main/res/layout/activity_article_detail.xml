@@ -17,7 +17,7 @@
         android:textSize="16sp"
         app:startRightMargin="@dimen/default_padding"
         app:finalMarginTop="16dp"
-        app:layout_behavior="com.example.xyzreader.ui.layout.CollapsingSubtitleBehavior"
+        app:layout_behavior="com.example.xyzreader.ui.behaviors.CollapsingSubtitleBehavior"
         app:startLeftPadding="2dp"
         android:elevation="8dp"
         app:startBottomPadding="@dimen/default_padding"
@@ -66,6 +66,19 @@
         </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/share_fab"
+            android:layout_gravity="bottom|end"
+            android:clickable="true"
+            android:focusable="true"
+            app:elevation="@dimen/fab_elevation"
+            app:layout_behavior=".ui.behaviors.FabScrollHideBehavior"
+            android:layout_margin="@dimen/default_padding"
+            android:src="@drawable/ic_share_white_24dp"
+            android:contentDescription="@string/action_share"
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager"

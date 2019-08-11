@@ -1,11 +1,10 @@
-package com.example.xyzreader.ui.layout;
+package com.example.xyzreader.ui.behaviors;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -30,7 +29,6 @@ public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextV
     private float finalMarginTop;
     private float finalPaddingLeft;
     private float startPaddingBottom;
-    private float mChangeBehaviorPoint;
 
     public CollapsingSubtitleBehavior(Context context, AttributeSet attrs) {
         mContext = context;
@@ -63,11 +61,6 @@ public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextV
                 + dependency.getY()
                 - child.getHeight()
                 - ((getToolbarHeight() - finalMarginTop - child.getHeight()) * percentage / 2);
-
-        Log.i(LOG_TAG, "Dependency Height :" + dependency.getHeight()
-                + "+ Dependency Y:" + dependency.getY()
-                + "- Child Height: " + child.getHeight()
-                + "- Final Pos : " + ((getToolbarHeight() - child.getHeight()) * percentage / 2) + 16) ;
 
         childPosition = childPosition - startPaddingBottom * (1f - percentage);
 

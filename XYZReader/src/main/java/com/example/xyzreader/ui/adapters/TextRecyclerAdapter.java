@@ -54,7 +54,8 @@ public class TextRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof ItemViewHolder) {
             ItemViewHolder itemHolder = (ItemViewHolder) holder;
-            itemHolder.bind(recyclerFeeder.getParagraph(position));
+            itemHolder.bind(recyclerFeeder.getParagraph(position))
+            ;
         } else if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
             headerHolder.bind(FormatUtils.formatDate(date));

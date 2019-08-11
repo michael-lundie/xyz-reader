@@ -1,5 +1,7 @@
 <resources>
-
     <string name="app_name">XYZ Reader</string>
-
+    <string name="action_share">Share this Story</string>
+    <string name="share_dialogue_title">Share Book</string>
+    <string name="share_text_name">Check out</string>
+    <string name="share_text_author">by</string>
 </resources>

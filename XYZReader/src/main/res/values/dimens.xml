@@ -3,6 +3,7 @@
     <dimen name="default_padding">16dp</dimen>
     <dimen name="default_h_padding">4dp</dimen>
     <dimen name="collapsing_tv_final_padding">72dp</dimen>
+    <dimen name="fab_elevation">8dp</dimen>
 
     <!-- detail -->
 
