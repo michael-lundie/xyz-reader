@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -228,6 +229,20 @@ public class ArticleDetailActivity extends AppCompatActivity
     public void onLoaderReset(@NonNull Loader<Cursor> cursorLoader) {
         mCursor = null;
         mPagerAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Override default ActionBar back behavior. Default behavior fires activity onCreate()
+     * wth null saved instance - not a desired behavior.
+     * @param item reference id of MenuItem
+     * @return boolean
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } return super.onOptionsItemSelected(item);
     }
 
     private void setStatusBarColor(int color) {

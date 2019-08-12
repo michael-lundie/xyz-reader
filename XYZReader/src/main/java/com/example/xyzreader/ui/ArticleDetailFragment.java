@@ -3,6 +3,7 @@ package com.example.xyzreader.ui;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -119,22 +120,22 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
         if (mCursor != null && cursor.getCount()>0) {
             cursor.moveToFirst();
-            Log.e(LOG_TAG, "Error reading item detail cursor");
             textRecyclerAdapter = new TextRecyclerAdapter(
                     cursor.getString(ArticleLoader.Query.BODY),
                     cursor.getString(ArticleLoader.Query.PUBLISHED_DATE));
 
             mCursor.close();
             mCursor = null;
+        } else {
+            Log.e(LOG_TAG, "Error reading item detail cursor");
         }
-        Log.e(LOG_TAG, "Cursor has loaded, setting up adapter");
 
-
+        // Everything seemed to go well, so let's bind our data to our UI.
         bindViews();
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> cursorLoader) {
         mCursor = null;
         bindViews();
     }

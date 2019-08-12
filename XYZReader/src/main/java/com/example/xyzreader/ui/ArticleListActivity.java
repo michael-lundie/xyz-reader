@@ -71,11 +71,9 @@ public class ArticleListActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articles_list);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        int actionbarHeight = R.attr.actionBarSize;
-        Drawable dr = getResources().getDrawable(R.drawable.logo);
-        int drawableHeight = dr.getIntrinsicHeight();
 
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -87,7 +85,12 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         getSupportLoaderManager().initLoader(0, null, this);
 
-        if (savedInstanceState == null) { refresh(); }
+        if (savedInstanceState == null) {
+            Log.i(LOG_TAG, "Saved instance state was null.");
+            refresh();
+        } else {
+            Log.i(LOG_TAG, "Saved instance state is NOT null.");
+        }
     }
 
     private void refresh() {
