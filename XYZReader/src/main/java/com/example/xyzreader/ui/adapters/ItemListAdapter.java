@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
+import com.example.xyzreader.utils.HelperUtils;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
@@ -77,7 +79,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         @BindView(R.id.article_title) TextView titleView;
 
         int alphaColor;
-        int vibrantColor;
+        int baseColor;
 
         ViewHolder(View view) {
             super(view);
@@ -85,43 +87,40 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             ButterKnife.bind(this,view);
         }
 
+        /**
+         * Class used to bind data to ViewHolder.
+         * @param listener reference to the onClickListener interface, handled by owner activity.
+         * @param uri contract uri for the article we wish to load
+         */
         void bind(final OnItemClickListener listener, final Uri uri) {
 
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
-            String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
+            final String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
 
             Picasso.get().load(imageUrl).into(thumbnailView,
-                PicassoPalette.with(imageUrl, thumbnailView)
+                    PicassoPalette.with(imageUrl, thumbnailView)
                     .use(PicassoPalette.Profile.VIBRANT)
                     .intoCallBack(new PicassoPalette.CallBack() {
                         @Override
                         public void onPaletteLoaded(Palette palette) {
+                            Log.i(LOG_TAG, "Palette callback");
                             // Get the returned color from the PicassoPalette library.
-                            vibrantColor = palette.getVibrantColor(
+                            baseColor = palette.getVibrantColor(
                                     ContextCompat.getColor(mView.getContext(), R.color.primary));
 
-                            // Return RGB values (we are replacing alpha, so no need for that.
-                            // Docs: https://developer.android.com/reference/android/graphics/Color
-                            // Note that we can't reliably use Color api methods, since minimum API is 19
-                            int R = (vibrantColor >> 16) & 0xff;
-                            int G = (vibrantColor >>  8) & 0xff;
-                            int B = (vibrantColor      ) & 0xff;
-
-                            // Create a new base color with same values, but applying semi-opaque alpha value
-
-                            alphaColor = (150 & 0xff) << 24 |
-                                    (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
+                            alphaColor = HelperUtils.generateSemiOpaque(baseColor, 150);
 
                             // Set generate color to titleView background.
-                            titleView.setBackgroundColor(alphaColor);
+                            titleView.setBackgroundColor(baseColor);
                         }
-                    }));
+                    })
+            );
 
             // Set up our onClickListener interface
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(uri, getAdapterPosition(), alphaColor, vibrantColor);
+                    listener.onItemClick(uri, getAdapterPosition(), alphaColor, baseColor);
                 }
             });
         }

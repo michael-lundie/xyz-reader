@@ -27,7 +27,7 @@ public class ArticleLoader extends CursorLoader {
 
     public interface QueryIDs {
         String[] PROJECTION = {
-                ItemsContract.Items._ID };
+                ItemsContract.Items._ID};
         int _ID = 0;
     }
 

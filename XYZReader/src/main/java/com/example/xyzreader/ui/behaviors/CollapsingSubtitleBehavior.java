@@ -16,7 +16,6 @@ import com.example.xyzreader.R;
  * to be used in conjunction with collapsing toolbar layout.
  * References:
  * http://saulmm.github.io/mastering-coordinator
- *
  */
 public class CollapsingSubtitleBehavior extends CoordinatorLayout.Behavior<TextView> {
 

@@ -10,17 +10,19 @@ import android.view.ViewGroup;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.ui.ArticleDetailFragment;
 
+/**
+ * Very simple implementation of a view pager adapter, creating pages from fragment instances.
+ * Nothing fancy here.
+ */
 public class ItemPagerAdapter extends FragmentStatePagerAdapter {
 
     private static final String LOG_TAG = ItemPagerAdapter.class.toString();
 
-    Cursor cursor;
+    private Cursor cursor;
 
     public ItemPagerAdapter(FragmentManager fragmentManager, Cursor cursor) {
         super(fragmentManager);
         this.cursor = cursor;
-        //TODO: Remove LOG
-        Log.e(LOG_TAG, "ItemPagerAdapter created. Cursor: " + cursor);
     }
 
     public void setCursor(Cursor cursor) {
@@ -29,8 +31,6 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        //TODO: Remove LOG
-        Log.e(LOG_TAG, "getItem called. Position -->> " + position);
         cursor.moveToPosition(position);
         return ArticleDetailFragment.newInstance(cursor.getLong(ArticleLoader.Query._ID));
     }
@@ -43,7 +43,5 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        //TODO: Remove LOG
-        Log.e(LOG_TAG, "DATA SET CHANGED: " + cursor);
     }
 }

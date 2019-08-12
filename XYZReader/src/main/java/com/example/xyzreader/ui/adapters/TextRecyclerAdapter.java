@@ -2,19 +2,24 @@ package com.example.xyzreader.ui.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.utils.FormatUtils;
+import com.example.xyzreader.utils.HelperUtils;
 import com.example.xyzreader.utils.TextRecyclerFeeder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Implementation of recycler view adapter, making use of two view types to allow the insertion
+ * of a unique header in the recycler view.
+ * This class is responsible for loading and recycling the large quantities of text being loaded
+ * from the cursor. (@see TextRecyclerFeeder)
+ */
 public class TextRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String LOG_TAG = TextRecyclerAdapter.class.toString();
 
@@ -27,7 +32,6 @@ public class TextRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private TextRecyclerFeeder recyclerFeeder;
 
     public TextRecyclerAdapter(String inputString, String articleDate) {
-        Log.e(LOG_TAG, "--> Notice confirmed. Setting up Adapter");
         this.textChunk = inputString;
         this.date = articleDate;
         this.recyclerFeeder = new TextRecyclerFeeder(inputString);
@@ -58,7 +62,7 @@ public class TextRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ;
         } else if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-            headerHolder.bind(FormatUtils.formatDate(date));
+            headerHolder.bind(HelperUtils.formatDate(date));
         }
     }
 

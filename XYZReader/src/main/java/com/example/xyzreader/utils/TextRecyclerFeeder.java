@@ -1,6 +1,5 @@
 package com.example.xyzreader.utils;
 
-import android.util.Log;
 import android.util.SparseIntArray;
 
 import java.util.regex.Matcher;
@@ -14,27 +13,44 @@ import java.util.regex.Pattern;
 //NOTES: We don't want to load all the text straight away. Waste of resources. What if we gradually
     // add our text to an array list and update the viewer. Then notify range updated.
     // we need to observe the current item the user is looking at, then make sure we load the next
-    // batch of text.
+    // batch of text. It might be better to somehow split content into pages.
 public class TextRecyclerFeeder {
     private static final String LOG_TAG = TextRecyclerFeeder.class.toString();
 
-    String inputString;
+    private String inputString;
     private SparseIntArray paragraphMap;
     private int numberOfParagraphs;
 
+    /**
+     * Constructor for TextRecyclerFeeder
+     * @param inputString initial text input!
+     */
     public TextRecyclerFeeder(String inputString) {
         this.inputString = inputString;
-        testInitFeeder();
+        initFeeder();
     }
 
-    private void testInitFeeder() {
+    /**
+     * Initialise the text feeder.
+     */
+    private void initFeeder() {
         paragraphMap = buildParagraphMap(inputString);
     }
 
+    /**
+     * Getter method to return the number of paragraphs in the text array.
+     * @return number of paragraphs as integer
+     */
     public int getParagraphCount() {
         return numberOfParagraphs;
     }
 
+    /**
+     * Getter method which returns the paragraph corresponding to an adapter position.
+     * (designed to be used in conjunction with recycler adapter)
+     * @param position position of adapter
+     * @return formatted paragraph as String
+     */
     public String getParagraph(int position) {
         if (paragraphMap == null) {
             return "error";
@@ -52,11 +68,21 @@ public class TextRecyclerFeeder {
         return formatOutput(outputString);
     }
 
+    /**
+     * Simple method to do minor formatting on output text.
+     * @param outputString string to be formatted
+     * @return formatted output string
+     */
     private String formatOutput(String outputString) {
-        String formattedString = outputString.replaceAll("\r\n", "");
-        return formattedString;
+        return outputString.replaceAll("\r\n", "");
     }
 
+    /**
+     * Method builds a map of paragraphs from the input text, in order to more efficiently
+     * organise data to be formatted and displayed on screen.
+     * @param inputString initial text input
+     * @return SparseIntArray of paragraphs.
+     */
     private SparseIntArray buildParagraphMap(String inputString) {
         numberOfParagraphs = 0;
         SparseIntArray mParagraphMap = new SparseIntArray();
@@ -67,8 +93,6 @@ public class TextRecyclerFeeder {
             mParagraphMap.append(numberOfParagraphs, matcher.end());
             numberOfParagraphs++;
         }
-        //TODO: Remove logs
-        Log.e(LOG_TAG, "Total number of Paragraphs -->>> " + numberOfParagraphs);
         return mParagraphMap;
     }
 }

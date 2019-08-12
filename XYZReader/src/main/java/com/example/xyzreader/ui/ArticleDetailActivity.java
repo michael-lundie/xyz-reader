@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,7 @@ import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.ui.adapters.ItemPagerAdapter;
+import com.example.xyzreader.utils.HelperUtils;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
@@ -30,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * An activity representing a single Article detail screen, letting you swipe between articles.
+ * An activity class representing a single Article detail screen, letting you swipe between articles.
  */
 public class ArticleDetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -61,15 +63,18 @@ public class ArticleDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
 
+        // Set-up toolbar, ActionBar and related functions.
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportLoaderManager().initLoader(0, null, this);
 
+        // Set-up the view pager adapter.
         mPagerAdapter = new ItemPagerAdapter(getSupportFragmentManager(), mCursor);
         mPager.setAdapter(mPagerAdapter);
 
+        // Set-up listener to detect page changes so that we can handle the cursor correctly.
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
@@ -90,6 +95,8 @@ public class ArticleDetailActivity extends AppCompatActivity
             public void onPageScrollStateChanged(int state) { }
         });
 
+        // Get intent data from our main activity.
+        // TODO: Set up loading from saved state correctly.
         if (getIntent() != null && getIntent().getData() != null) {
             if (savedInstanceState == null) {
                 Log.e(LOG_TAG, "Retrieving URI <<-- " + getIntent().getData());
@@ -105,9 +112,14 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Binds our cursor data to the required views.
+     * @param position The position to move the cursor to respectively.
+     */
     private void bindDataToViews(int position) {
         // Handle Error here
         if (mCursor == null) {
+            Log.e(LOG_TAG, "There was a problem retrieving the cursor. Check implementation");
             return;
         }
 
@@ -118,6 +130,9 @@ public class ArticleDetailActivity extends AppCompatActivity
         setUpFab();
     }
 
+    /**
+     * Simple method that set's up the ArticleDetailActivity FAB button.
+     */
     private void setUpFab() {
         final StringBuilder shareIntentText = new StringBuilder()
                 .append(this.getString(R.string.share_text_name)).append(" ")
@@ -138,66 +153,52 @@ public class ArticleDetailActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Simple method responsible for setting up and biding toolbar data and header image to UI.
+     */
     private void setToolbarTitleAndImage() {
-        //TODO: Handle errors here
-        if (mCursor == null) {
-            return;
-        }
-
         articleTitle = mCursor.getString(ArticleLoader.Query.TITLE);
         ctLayout.setTitle(articleTitle);
 
-        String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
+        final String imageUrl = mCursor.getString(ArticleLoader.Query.THUMB_URL);
 
-        Picasso.get().load(imageUrl).into(heroIv,
-                PicassoPalette.with(imageUrl, heroIv)
-                        .use(PicassoPalette.Profile.VIBRANT)
-                        .intoCallBack(new PicassoPalette.CallBack() {
-                            @Override
-                            public void onPaletteLoaded(Palette palette) {
-                                // Get the returned color from the PicassoPalette library.
-                                int toolbarColor = palette.getVibrantColor(
-                                        ContextCompat.getColor(mPager.getContext(), R.color.primary));
+        Picasso.get().load(imageUrl).into(heroIv, PicassoPalette.with(imageUrl, heroIv)
+                .use(PicassoPalette.Profile.VIBRANT)
+                .intoCallBack(new PicassoPalette.CallBack() {
+                    @Override
+                    public void onPaletteLoaded(Palette palette) {
+                        // Get the returned color from the PicassoPalette library.
+                        int baseColor = palette.getVibrantColor(
+                                ContextCompat.getColor(mPager.getContext(), R.color.primary));
 
-                                // Return RGB values (we are replacing alpha, so no need for that.)
-                                // https://developer.android.com/reference/android/graphics/Color
-                                // Note that we can't reliably use Color api methods, since minimum
-                                // API is 19
-                                int toolbarColor_R = (toolbarColor >> 16) & 0xff;
-                                int toolbarColor_G = (toolbarColor >> 8) & 0xff;
-                                int toolbarColor_B = (toolbarColor) & 0xff;
+                        // Set generate color to titleView background.
+                        toolbar.setBackgroundColor(ContextCompat.getColor(
+                                mPager.getContext(),R.color.transparent));
 
-                                // Create a new base color with same values, but applying
-                                // a semi-opaque alpha value
-                                int alphaColor = (150 & 0xff) << 24 |
-                                        (toolbarColor_R & 0xff) << 16 |
-                                        (toolbarColor_G & 0xff) << 8 |
-                                        (toolbarColor_B & 0xff);
-
-                                // Set generate color to titleView background.
-                                toolbar.setBackgroundColor(ContextCompat.getColor(
-                                        mPager.getContext(),R.color.transparent));
-
-                                ctLayout.setContentScrimColor(toolbarColor);
-                                ctLayout.setBackgroundColor(toolbarColor);
-                                setStatusBarColor(alphaColor);
-                            }
-                        }));
+                        ctLayout.setContentScrimColor(baseColor);
+                        ctLayout.setBackgroundColor(baseColor);
+                        setStatusBarColor(HelperUtils.generateSemiOpaque(baseColor, 150));
+                    }
+                })
+        );
     }
 
+    /**
+     * Binds subtitle data to ui.
+     */
     private void setSubtitle() {
-
         articleAuthor = mCursor.getString(ArticleLoader.Query.AUTHOR);
         subtitleTV.setText(articleAuthor);
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return ArticleLoader.newAllArticlesInstance(this);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+    public void onLoadFinished(@NonNull Loader<Cursor> cursorLoader, Cursor cursor) {
         Log.e(LOG_TAG, "On Load Finished called! Cursor: " + cursor);
         mCursor = cursor;
         mPagerAdapter.setCursor(mCursor);
@@ -224,7 +225,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> cursorLoader) {
         mCursor = null;
         mPagerAdapter.notifyDataSetChanged();
     }

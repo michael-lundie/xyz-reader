@@ -9,9 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public final class FormatUtils {
+public final class HelperUtils {
 
-    private static final String LOG_TAG = FormatUtils.class.getSimpleName();
+    private static final String LOG_TAG = HelperUtils.class.getSimpleName();
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -42,5 +42,24 @@ public final class FormatUtils {
             Log.i(LOG_TAG, "passing today's date");
             return new Date();
         }
+    }
+
+    /**
+     *  Generates a semi-opaque version of a base color
+     * @param baseColor Initial color from which to generate transparent version
+     * @param transparency Value of opacity
+     * @return integer representation of color value
+     */
+    public static int generateSemiOpaque(int baseColor, int transparency) {
+        // Return RGB values (we are replacing alpha, so no need for that.
+        // Docs: https://developer.android.com/reference/android/graphics/Color
+        // Note that we can't reliably use Color api methods, since current minimum API is 19
+        int R = (baseColor >> 16) & 0xff;
+        int G = (baseColor >> 8) & 0xff;
+        int B = (baseColor) & 0xff;
+
+        // Create a new base color with same values, but applying semi-opaque alpha value
+
+        return (transparency & 0xff) << 24 | (R & 0xff) << 16 | (G & 0xff) << 8 | (B & 0xff);
     }
 }
