@@ -24,6 +24,7 @@ import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.ui.adapters.ItemPagerAdapter;
 import com.example.xyzreader.utils.HelperUtils;
+import com.example.xyzreader.utils.Keys;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
@@ -57,6 +58,9 @@ public class ArticleDetailActivity extends AppCompatActivity
     String articleTitle;
     String articleAuthor;
 
+    int statusBarColor;
+    int backgroundColor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,16 +73,41 @@ public class ArticleDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportLoaderManager().initLoader(0, null, this);
+
 
         // Set-up the view pager adapter.
         mPagerAdapter = new ItemPagerAdapter(getSupportFragmentManager(), mCursor);
         mPager.setAdapter(mPagerAdapter);
 
+        if (savedInstanceState == null) {
+            if (getIntent() != null && getIntent().getData() != null) {
+                Log.e(LOG_TAG, "Retrieving URI <<-- " + getIntent().getData());
+
+                mStartId = ItemsContract.Items.getItemId(getIntent().getData());
+
+                selectedItemId = mStartId;
+
+                selectedPosition = getIntent().getIntExtra(Keys.POSITION, 0);
+                statusBarColor = getIntent().getIntExtra(Keys.STATUS_BAR_COLOR, R.color.primary);
+                backgroundColor = getIntent().getIntExtra(Keys.FADE_COLOR, R.color.primary);
+                setPaletteColors(backgroundColor);
+            } else {
+                // There was no intent received.
+                //TODO: Regenerate content
+            }
+
+            getSupportLoaderManager().initLoader(0, null, this);
+
+        } else {
+            // Saved instance state is not null.
+            loadSavedStateFromBundle(savedInstanceState);
+        }
+
         // Set-up listener to detect page changes so that we can handle the cursor correctly.
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -93,24 +122,23 @@ public class ArticleDetailActivity extends AppCompatActivity
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) { }
-        });
-
-        // Get intent data from our main activity.
-        // TODO: Set up loading from saved state correctly.
-        if (getIntent() != null && getIntent().getData() != null) {
-            if (savedInstanceState == null) {
-                Log.e(LOG_TAG, "Retrieving URI <<-- " + getIntent().getData());
-
-                mStartId = ItemsContract.Items.getItemId(getIntent().getData());
-                //TODO: Pass selected item to adapter
-                selectedItemId = mStartId;
+            public void onPageScrollStateChanged(int state) {
             }
-            selectedPosition = getIntent().getExtras().getInt("position");
-            setStatusBarColor(getIntent().getExtras().getInt("alphaColor"));
-            ctLayout.setBackgroundColor(getIntent().getExtras().getInt("vibrantColor"));
-        }
+        });
+    }
 
+    private void loadSavedStateFromBundle(Bundle savedInstanceState) {
+        selectedPosition = savedInstanceState.getInt(Keys.POSITION);
+        statusBarColor = savedInstanceState.getInt(Keys.STATUS_BAR_COLOR);
+        backgroundColor = savedInstanceState.getInt(Keys.FADE_COLOR);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(Keys.POSITION, selectedPosition);
+        outState.putInt(Keys.STATUS_BAR_COLOR, statusBarColor);
+        outState.putInt(Keys.FADE_COLOR, backgroundColor);
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -172,13 +200,7 @@ public class ArticleDetailActivity extends AppCompatActivity
                         int baseColor = palette.getVibrantColor(
                                 ContextCompat.getColor(mPager.getContext(), R.color.primary));
 
-                        // Set generate color to titleView background.
-                        toolbar.setBackgroundColor(ContextCompat.getColor(
-                                mPager.getContext(),R.color.transparent));
-
-                        ctLayout.setContentScrimColor(baseColor);
-                        ctLayout.setBackgroundColor(baseColor);
-                        setStatusBarColor(HelperUtils.generateSemiOpaque(baseColor, 150));
+                        setPaletteColors(baseColor);
                     }
                 })
         );
@@ -205,10 +227,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         mPagerAdapter.setCursor(mCursor);
         mPagerAdapter.notifyDataSetChanged();
 
-        if(selectedPosition == 0) {
-            bindDataToViews(0);
-        }
-
         // Select the start ID
         if (mStartId > 0) {
             mCursor.moveToFirst();
@@ -217,6 +235,7 @@ public class ArticleDetailActivity extends AppCompatActivity
                 if (mCursor.getLong(ArticleLoader.Query._ID) == mStartId) {
                     final int position = mCursor.getPosition();
                     mPager.setCurrentItem(position, false);
+                    bindDataToViews(position);
                     break;
                 }
                 mCursor.moveToNext();
@@ -243,6 +262,16 @@ public class ArticleDetailActivity extends AppCompatActivity
             onBackPressed();
             return true;
         } return super.onOptionsItemSelected(item);
+    }
+
+    private void setPaletteColors(int baseColor) {
+        // Set generate color to titleView background.
+        toolbar.setBackgroundColor(ContextCompat.getColor(
+                mPager.getContext(),R.color.transparent));
+
+        ctLayout.setContentScrimColor(baseColor);
+        ctLayout.setBackgroundColor(baseColor);
+        setStatusBarColor(HelperUtils.generateSemiOpaque(baseColor, 150));
     }
 
     private void setStatusBarColor(int color) {

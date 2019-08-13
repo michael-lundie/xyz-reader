@@ -75,7 +75,16 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         // the fragment's onCreate may cause the same LoaderManager to be dealt to multiple
         // fragments because their mIndex is -1 (haven't been added to the activity yet). Thus,
         // we do this in onActivityCreated.
+        if(savedInstanceState == null) {
+            Log.i(LOG_TAG, "Saved Instance is null");
+            getLoaderManager().initLoader(0, null, this);
+        }
+    }
+
+    @Override
+    public void onResume() {
         getLoaderManager().initLoader(0, null, this);
+        super.onResume();
     }
 
     @Override
@@ -94,6 +103,13 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         if (mRootView == null) {
             return;
         }
+
+        if(mCursor != null) {
+            textRecyclerAdapter = new TextRecyclerAdapter(
+                    mCursor.getString(ArticleLoader.Query.BODY),
+                    mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE));
+        }
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         bodyTextRv.setLayoutManager(layoutManager);
         bodyTextRv.setAdapter(textRecyclerAdapter);
@@ -118,19 +134,15 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
         mCursor = cursor;
 
-        if (mCursor != null && cursor.getCount()>0) {
-            cursor.moveToFirst();
-            textRecyclerAdapter = new TextRecyclerAdapter(
-                    cursor.getString(ArticleLoader.Query.BODY),
-                    cursor.getString(ArticleLoader.Query.PUBLISHED_DATE));
+        if (mCursor != null && !mCursor.moveToFirst()) {
 
+            Log.e(LOG_TAG, "Error reading item detail cursor");
             mCursor.close();
             mCursor = null;
-        } else {
-            Log.e(LOG_TAG, "Error reading item detail cursor");
         }
 
         // Everything seemed to go well, so let's bind our data to our UI.
+
         bindViews();
     }
 
@@ -139,5 +151,4 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         mCursor = null;
         bindViews();
     }
-
 }

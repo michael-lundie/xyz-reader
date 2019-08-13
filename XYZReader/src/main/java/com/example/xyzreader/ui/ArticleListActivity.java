@@ -28,6 +28,7 @@ import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.adapters.ItemListAdapter;
+import com.example.xyzreader.utils.Keys;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -131,9 +132,9 @@ public class ArticleListActivity extends AppCompatActivity implements
                 Log.e(LOG_TAG, "Requesting URI --> " + uri);
 
                 Intent detailActivityIntent = new Intent(Intent.ACTION_VIEW, uri);
-                detailActivityIntent.putExtra("position", position)
-                                    .putExtra("alphaColor", alphaColor)
-                                    .putExtra("vibrantColor", vibrantColor);
+                detailActivityIntent.putExtra(Keys.POSITION, position)
+                                    .putExtra(Keys.STATUS_BAR_COLOR, alphaColor)
+                                    .putExtra(Keys.FADE_COLOR, vibrantColor);
                 startActivity(detailActivityIntent);
             }
         });
