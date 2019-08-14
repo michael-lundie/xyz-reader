@@ -4,4 +4,5 @@
     <string name="share_dialogue_title">Share Book</string>
     <string name="share_text_name">Check out</string>
     <string name="share_text_author">by</string>
+    <string name="offline_text">Looks like your offline. Reconnect and try again.</string>
 </resources>

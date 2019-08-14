@@ -22,6 +22,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.animation.GridLayoutAnimationController;
+import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
@@ -29,6 +30,8 @@ import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.adapters.ItemListAdapter;
 import com.example.xyzreader.utils.Keys;
+
+import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +55,7 @@ public class ArticleListActivity extends AppCompatActivity implements
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.list_recycler_view) RecyclerView listRecyclerView;
+    @BindView(R.id.empty_view) TextView emptyRecyclerView;
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
     ItemListAdapter listAdapter;
@@ -61,7 +65,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         public void onReceive(Context context, Intent intent) {
             if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
                 mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
-                Log.e(LOG_TAG, "Refreshing Status --> " + mIsRefreshing);
                 updateRefreshingUI();
             }
         }
@@ -79,7 +82,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.e(LOG_TAG, "onRefresh called.");
                 refresh();
             }
         });
@@ -87,10 +89,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(0, null, this);
 
         if (savedInstanceState == null) {
-            Log.i(LOG_TAG, "Saved instance state was null.");
             refresh();
-        } else {
-            Log.i(LOG_TAG, "Saved instance state is NOT null.");
         }
     }
 
@@ -122,32 +121,38 @@ public class ArticleListActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        Log.e(LOG_TAG, "Loader finished.");
 
-        listAdapter = new ItemListAdapter(cursor,
-                new ItemListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Uri uri, int position, int alphaColor,
-                                    int vibrantColor) {
-                //TODO: Remove LOG
-                Log.e(LOG_TAG, "Requesting URI --> " + uri);
+        if((cursor != null) && (cursor.getCount() > 0)) {
+            listAdapter = new ItemListAdapter(cursor,
+                    new ItemListAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Uri uri, int position, int alphaColor,
+                                                int vibrantColor) {
+                            //TODO: Remove LOG
+                            Log.e(LOG_TAG, "Requesting URI --> " + uri);
 
-                Intent detailActivityIntent = new Intent(Intent.ACTION_VIEW, uri);
-                detailActivityIntent.putExtra(Keys.POSITION, position)
+                            Intent detailActivityIntent = new Intent(Intent.ACTION_VIEW, uri);
+                            detailActivityIntent.putExtra(Keys.POSITION, position)
                                     .putExtra(Keys.STATUS_BAR_COLOR, alphaColor)
                                     .putExtra(Keys.FADE_COLOR, vibrantColor);
-                startActivity(detailActivityIntent);
-            }
-        });
+                            startActivity(detailActivityIntent);
+                        }
+                    });
 
-        listAdapter.setHasStableIds(true);
-        listRecyclerView.setAdapter(listAdapter);
+            listAdapter.setHasStableIds(true);
+            listRecyclerView.setAdapter(listAdapter);
 
-        int columnCount = getResources().getInteger(R.integer.list_column_count);
+            int columnCount = getResources().getInteger(R.integer.list_column_count);
 
-        GridLayoutManager gridLayoutManager =
-                new GridLayoutManager(this, columnCount);
+            GridLayoutManager gridLayoutManager =
+                    new GridLayoutManager(this, columnCount);
 
-        listRecyclerView.setLayoutManager(gridLayoutManager);
+            listRecyclerView.setLayoutManager(gridLayoutManager);
+        } else {
+            Log.e(LOG_TAG, "cursor null");
+            emptyRecyclerView.setVisibility(VISIBLE);
+        }
     }
 
     @Override
