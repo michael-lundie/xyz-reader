@@ -5,9 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -17,26 +15,22 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.animation.GridLayoutAnimationController;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
-import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.adapters.ItemListAdapter;
+import com.example.xyzreader.ui.views.RecycleViewWithSetEmpty;
 import com.example.xyzreader.utils.Keys;
-
-import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.support.v4.widget.SwipeRefreshLayout.*;
+import static android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 
 /**
  * An activity representing a list of Articles. This activity has different presentations for
@@ -54,8 +48,8 @@ public class ArticleListActivity extends AppCompatActivity implements
     @BindView(R.id.main_activity) CoordinatorLayout mainLayout;
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.list_recycler_view) RecyclerView listRecyclerView;
-    @BindView(R.id.empty_view) TextView emptyRecyclerView;
+    @BindView(R.id.list_recycler_view) RecycleViewWithSetEmpty listRecyclerView;
+    @BindView(R.id.empty_view) TextView emptyRecyclerTV;
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
     ItemListAdapter listAdapter;
@@ -75,6 +69,9 @@ public class ArticleListActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articles_list);
         ButterKnife.bind(this);
+
+        listRecyclerView.setAdapter(listAdapter);
+        listRecyclerView.setEmptyView(emptyRecyclerTV);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -121,16 +118,12 @@ public class ArticleListActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        Log.e(LOG_TAG, "Loader finished.");
 
-        if((cursor != null) && (cursor.getCount() > 0)) {
             listAdapter = new ItemListAdapter(cursor,
                     new ItemListAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Uri uri, int position, int alphaColor,
                                                 int vibrantColor) {
-                            //TODO: Remove LOG
-                            Log.e(LOG_TAG, "Requesting URI --> " + uri);
 
                             Intent detailActivityIntent = new Intent(Intent.ACTION_VIEW, uri);
                             detailActivityIntent.putExtra(Keys.POSITION, position)
@@ -142,17 +135,13 @@ public class ArticleListActivity extends AppCompatActivity implements
 
             listAdapter.setHasStableIds(true);
             listRecyclerView.setAdapter(listAdapter);
-
+            listRecyclerView.setEmptyView(emptyRecyclerTV);
             int columnCount = getResources().getInteger(R.integer.list_column_count);
 
             GridLayoutManager gridLayoutManager =
                     new GridLayoutManager(this, columnCount);
 
             listRecyclerView.setLayoutManager(gridLayoutManager);
-        } else {
-            Log.e(LOG_TAG, "cursor null");
-            emptyRecyclerView.setVisibility(VISIBLE);
-        }
     }
 
     @Override

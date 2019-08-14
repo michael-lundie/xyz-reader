@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <include layout="@layout/appbar_simple" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/empty_view"
-            android:textColor="@color/cardview_dark_background"
-            android:visibility="invisible"
-            android:gravity="center_vertical"
-            android:text="@string/offline_text"
-            android:textAlignment="center"
-            android:padding="@dimen/default_padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <android.support.v7.widget.RecyclerView
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.example.xyzreader.ui.views.RecycleViewWithSetEmpty
             android:id="@+id/list_recycler_view"
-            android:theme="@style/Meadow.RecyclerView"
-            tools:listitem="@layout/list_item_article"
-            tools:layoutManager="android.support.v7.widget.GridLayoutManager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:theme="@style/Meadow.RecyclerView"
+            tools:layoutManager="android.support.v7.widget.GridLayoutManager"
+            tools:listitem="@layout/list_item_article" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="@dimen/default_padding"
+        android:text="@string/offline_text"
+        android:textAlignment="center" />
 </android.support.design.widget.CoordinatorLayout>

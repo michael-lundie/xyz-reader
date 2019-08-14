@@ -9,9 +9,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:clipChildren="false"
-        android:layout_marginBottom="0dp"
-        android:layout_marginStart="@dimen/default_padding"
-        android:paddingTop="@dimen/default_h_padding"
         android:layout_height="wrap_content">
         <ImageView
             android:theme="@style/Meadow.Toolbar.Logo"

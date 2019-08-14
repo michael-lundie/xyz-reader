@@ -91,11 +91,9 @@ public class ArticleDetailActivity extends AppCompatActivity
                 statusBarColor = getIntent().getIntExtra(Keys.STATUS_BAR_COLOR, R.color.primary);
                 backgroundColor = getIntent().getIntExtra(Keys.FADE_COLOR, R.color.primary);
                 setPaletteColors(backgroundColor);
-            } else {
-                // There was no intent received.
-                //TODO: Regenerate content
             }
 
+            
             getSupportLoaderManager().initLoader(0, null, this);
 
         } else {
@@ -230,7 +228,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         // Select the start ID
         if (mStartId > 0) {
             mCursor.moveToFirst();
-            // TODO: optimize
             while (!mCursor.isAfterLast()) {
                 if (mCursor.getLong(ArticleLoader.Query._ID) == mStartId) {
                     final int position = mCursor.getPosition();
