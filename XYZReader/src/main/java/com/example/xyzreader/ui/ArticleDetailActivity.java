@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -81,19 +80,15 @@ public class ArticleDetailActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getData() != null) {
-                Log.e(LOG_TAG, "Retrieving URI <<-- " + getIntent().getData());
-
                 mStartId = ItemsContract.Items.getItemId(getIntent().getData());
-
                 selectedItemId = mStartId;
-
                 selectedPosition = getIntent().getIntExtra(Keys.POSITION, 0);
                 statusBarColor = getIntent().getIntExtra(Keys.STATUS_BAR_COLOR, R.color.primary);
                 backgroundColor = getIntent().getIntExtra(Keys.FADE_COLOR, R.color.primary);
                 setPaletteColors(backgroundColor);
             }
 
-            
+
             getSupportLoaderManager().initLoader(0, null, this);
 
         } else {
@@ -109,7 +104,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                Log.i(LOG_TAG, "Selecting the current position --> " + position);
                 bindDataToViews(position);
 
                 if (mCursor != null) {
@@ -146,7 +140,6 @@ public class ArticleDetailActivity extends AppCompatActivity
     private void bindDataToViews(int position) {
         // Handle Error here
         if (mCursor == null) {
-            Log.e(LOG_TAG, "There was a problem retrieving the cursor. Check implementation");
             return;
         }
 
@@ -220,7 +213,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> cursorLoader, Cursor cursor) {
-        Log.e(LOG_TAG, "On Load Finished called! Cursor: " + cursor);
         mCursor = cursor;
         mPagerAdapter.setCursor(mCursor);
         mPagerAdapter.notifyDataSetChanged();
