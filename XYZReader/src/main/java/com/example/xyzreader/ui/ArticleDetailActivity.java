@@ -25,6 +25,7 @@ import com.example.xyzreader.ui.adapters.ItemPagerAdapter;
 import com.example.xyzreader.utils.HelperUtils;
 import com.example.xyzreader.utils.Keys;
 import com.github.florent37.picassopalette.PicassoPalette;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
@@ -51,6 +52,8 @@ public class ArticleDetailActivity extends AppCompatActivity
     private long mStartId;
     private long selectedItemId;
 
+    private String imageUrl;
+
     private ItemPagerAdapter mPagerAdapter;
     private int selectedPosition;
 
@@ -64,8 +67,17 @@ public class ArticleDetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(null);
+        }
+
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
+
+        // This call is supported by API 19, so we don't need to worry about a version check here.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+        }
 
         // Set-up toolbar, ActionBar and related functions.
         toolbar.setTitle("");
@@ -187,6 +199,9 @@ public class ArticleDetailActivity extends AppCompatActivity
                 .intoCallBack(new PicassoPalette.CallBack() {
                     @Override
                     public void onPaletteLoaded(Palette palette) {
+                        ArticleDetailActivity.this.supportStartPostponedEnterTransition();
+                        //supportStartPostponedEnterTransition();
+
                         // Get the returned color from the PicassoPalette library.
                         int baseColor = palette.getVibrantColor(
                                 ContextCompat.getColor(mPager.getContext(), R.color.primary));

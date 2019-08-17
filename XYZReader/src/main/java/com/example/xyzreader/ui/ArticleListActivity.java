@@ -7,17 +7,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
@@ -123,13 +127,13 @@ public class ArticleListActivity extends AppCompatActivity implements
                     new ItemListAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Uri uri, int position, int alphaColor,
-                                                int vibrantColor) {
+                                                int vibrantColor, ImageView imageView) {
 
                             Intent detailActivityIntent = new Intent(Intent.ACTION_VIEW, uri);
                             detailActivityIntent.putExtra(Keys.POSITION, position)
                                     .putExtra(Keys.STATUS_BAR_COLOR, alphaColor)
                                     .putExtra(Keys.FADE_COLOR, vibrantColor);
-                            startActivity(detailActivityIntent);
+                            startActivityByApiVersion(detailActivityIntent, imageView);
                         }
                     });
 
@@ -147,5 +151,27 @@ public class ArticleListActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         listRecyclerView.setAdapter(null);
+    }
+
+    private void startActivityByApiVersion(Intent intent, ImageView imageView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivityWithTransition(intent, imageView);
+        } else {
+            startActivity(intent);
+        }
+    }
+
+    @RequiresApi(21)
+    private void startActivityWithTransition(Intent intent, ImageView imageView) {
+        // WARNING: Must do a version check for API 21 when calling this method.
+        // Annotation alone is not enough.
+
+        //Set exit transition to prevent flicker.
+        getWindow().setExitTransition(null);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, imageView,
+                        ViewCompat.getTransitionName(imageView));
+        startActivity(intent, options.toBundle());
     }
 }

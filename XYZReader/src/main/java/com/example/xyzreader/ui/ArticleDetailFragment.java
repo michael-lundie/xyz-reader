@@ -66,7 +66,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
         setHasOptionsMenu(true);
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
